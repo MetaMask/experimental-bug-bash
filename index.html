@@ -14,7 +14,7 @@
     --ink: #16151a;
     --mute: #77757f;
     --hair: #d6d5db;
-    --orange: #f5841f;
+    --orange: #FA4B00;
 
     --display: "Archivo", system-ui, sans-serif;
     --body: "Inter Tight", system-ui, sans-serif;
@@ -464,13 +464,14 @@
     document.getElementById("prize").textContent = d.prize;
     document.getElementById("stamp").textContent = fmtStamp(d.updatedAt);
 
-    const max = d.standings.reduce((m, r) => Math.max(m, r.points), 0);
+    const active = d.standings.filter((r) => r.points > 0 || (r.inFlight ?? 0) > 0);
+    const max = active.reduce((m, r) => Math.max(m, r.points), 0);
     const preSeason = max === 0; // nobody has scored — don't imply an order
     const rows = document.getElementById("rows");
 
     const listed = preSeason
-      ? [...d.standings].sort((a, b) => a.name.localeCompare(b.name))
-      : d.standings;
+      ? [...active].sort((a, b) => a.name.localeCompare(b.name))
+      : active;
 
     const labels = d.labels || ["type-bug", "design"];
     const repoPath = d.repo || "MetaMask/metamask-mobile";
@@ -485,9 +486,9 @@
          `merged:${d.window.start}..${d.window.end}`, "sort:updated-desc"].join(" ")
       );
 
-    // Day one is an empty board by design — nobody is seeded. Make it an
+    // Day one is an empty board by design — zeros aren't listed. Make it an
     // invitation with the labels pre-applied rather than a dead row.
-    if (!d.standings.length) {
+    if (!listed.length) {
       const backlogUrl =
         "https://github.com/" +
         repoPath +
@@ -519,7 +520,7 @@
           <a class="row ${lead ? "lead" : ""} rise" href="${auditUrl(r.login)}"
              style="animation-delay:${i * 45}ms"
              title="See ${r.name}'s Bug Bash issues on GitHub">
-            <span class="rank">${preSeason ? "&middot;" : String(i + 1).padStart(2, "0")}</span>
+            <span class="rank">${preSeason || !r.points ? "&middot;" : String(i + 1).padStart(2, "0")}</span>
             <div class="who">
               <div class="name">${r.name}</div>
               <div class="handle">@${r.login}${r.inFlight ? ` · ${r.inFlight} in flight` : ""}</div>

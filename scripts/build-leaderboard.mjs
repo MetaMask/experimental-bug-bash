@@ -140,7 +140,8 @@ do {
 const designers = new Set(DESIGNERS.map((l) => l.toLowerCase()));
 const names = await fetchNames(DESIGNERS);
 
-// Seed a row per designer so the whole team shows from day one.
+// Score into a row per designer. Empty rows are omitted from standings so
+// people at zero aren't published.
 const board = new Map(
   DESIGNERS.map((login) => {
     const key = login.toLowerCase();
@@ -193,6 +194,7 @@ for (const issue of issues) {
 // Display names come from GitHub profiles. A blank profile shows as the handle,
 // which is how that person already appears in the repo anyway.
 const standings = [...board.values()]
+  .filter((row) => row.points > 0 || row.inFlight > 0)
   .map((row) => ({
     ...row,
     fixes: row.fixes.sort((a, b) => new Date(b.mergedAt) - new Date(a.mergedAt)),
@@ -217,7 +219,7 @@ const out = {
   prize,
   totals: {
     fixes: standings.reduce((n, r) => n + r.points, 0),
-    designers: standings.length,
+    designers: DESIGNERS.length,
     inFlight: standings.reduce((n, r) => n + r.inFlight, 0),
     fixedByOthers,
   },
@@ -228,5 +230,5 @@ await writeFile(new URL("../data.json", import.meta.url), JSON.stringify(out, nu
 
 console.log(
   `${out.totals.fixes} fixes by ${standings.filter((r) => r.points).length} of ` +
-    `${standings.length} designers, ${out.totals.inFlight} in flight. Wrote data.json.`,
+    `${DESIGNERS.length} designers, ${out.totals.inFlight} in flight. Wrote data.json.`,
 );

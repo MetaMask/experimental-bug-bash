@@ -46,6 +46,9 @@ These exist because each one closes a specific hole. Preserve them.
 - **Day one is an empty board by design.** The empty state is the most-viewed
   screen of the month; it's a call to action with the labels pre-applied in the
   new-issue URL. Don't downgrade it to a placeholder row.
+- **Don't list designers at zero.** A row appears only after a merge or an
+  in-flight PR. Publishing the whole roster at 0 reads as a ranking of who
+  hasn't started.
 - **No rank numbers until someone scores.** While all points are zero the board
   sorts alphabetically and shows a dot instead of a rank, so it doesn't imply
   that whoever sorts first is winning.
@@ -53,7 +56,7 @@ These exist because each one closes a specific hole. Preserve them.
 
 ## Visual language
 
-Don't restyle without being asked. MetaMask orange (`#F5841F`) as a full-bleed
+Don't restyle without being asked. MetaMask orange (`#FA4B00`) as a full-bleed
 field rather than an accent; Archivo 900 for display, JetBrains Mono for all
 data and labels, Inter Tight for prose. The signature element is the mark grid —
 one small square per merged fix, so a row reads as a unit bar chart. The leader
