@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bug Bash — September 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;900&family=Inter+Tight:wght@400;500&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --field: #e7e6ea;
+    --card: #ffffff;
+    --ink: #16151a;
+    --mute: #77757f;
+    --hair: #d6d5db;
+    --orange: #f5841f;
+
+    --display: "Archivo", system-ui, sans-serif;
+    --body: "Inter Tight", system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--field);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* ── Hero ─────────────────────────────────────────── */
+
+  .hero {
+    background: var(--orange);
+    padding: 34px 0 0;
+  }
+
+  .hero-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .hero-top .eyebrow { color: #6b3403; }
+
+  .hero h1 {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(3rem, 13vw, 8.5rem);
+    line-height: 0.84;
+    letter-spacing: -0.045em;
+    text-transform: uppercase;
+    margin: 22px 0 0;
+  }
+
+  .hero-stats {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding: 28px 0 30px;
+  }
+
+  .tally {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+
+  .tally-num {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(3.5rem, 14vw, 7rem);
+    line-height: 0.78;
+    letter-spacing: -0.05em;
+  }
+
+  .tally-label {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    max-width: 8ch;
+    line-height: 1.3;
+    color: #6b3403;
+  }
+
+  .side-stats {
+    display: flex;
+    gap: 28px;
+  }
+
+  .side-stat .n {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 22px;
+    display: block;
+  }
+
+  .side-stat .k {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #6b3403;
+  }
+
+  /* ── Board ────────────────────────────────────────── */
+
+  .board { padding: 30px 0 12px; }
+
+  .board-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--hair);
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+  }
+
+  .board-head .eyebrow,
+  .board-head .stamp { color: var(--mute); }
+
+  .stamp {
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+
+  .row {
+    color: inherit;
+    text-decoration: none;
+    display: grid;
+    grid-template-columns: 46px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 18px;
+    background: var(--card);
+    border-radius: 3px;
+    padding: 18px 22px;
+    margin-bottom: 6px;
+  }
+
+  .row.lead {
+    background: var(--ink);
+    color: #fff;
+    padding: 26px 22px;
+  }
+
+  a.row { transition: box-shadow 0.15s ease; }
+
+  a.row:hover { box-shadow: inset 0 0 0 1.5px var(--orange); }
+
+  .rank {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--mute);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .row.lead .rank { color: var(--orange); }
+
+  .who { min-width: 0; }
+
+  .name {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 19px;
+    letter-spacing: -0.015em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .row.lead .name {
+    font-weight: 900;
+    font-size: 26px;
+    text-transform: uppercase;
+    letter-spacing: -0.03em;
+  }
+
+  .handle {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--mute);
+  }
+
+  .row.lead .handle { color: #a9a7b2; }
+
+  /* Signature: one square per merged fix. */
+  .marks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 9px;
+    max-width: 100%;
+  }
+
+  .mark {
+    width: 13px;
+    height: 13px;
+    border-radius: 2px;
+    background: var(--orange);
+  }
+
+  .mark.ghost {
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--hair);
+  }
+
+  .row.lead .mark.ghost { box-shadow: inset 0 0 0 1px #3a3843; }
+
+  .pts {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 26px;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  .row.lead .pts { font-size: 40px; }
+
+  .pts.zero { color: var(--hair); }
+
+  .pts small {
+    display: block;
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mute);
+    margin-top: 2px;
+  }
+
+  .row.lead .pts small { color: #a9a7b2; }
+
+  /* ── Empty board (day one) ────────────────────────── */
+
+  .empty {
+    background: var(--card);
+    border-radius: 3px;
+    padding: 54px 34px 46px;
+    text-align: center;
+  }
+
+  .empty-lead {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(1.5rem, 4.5vw, 2.4rem);
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    text-transform: uppercase;
+    margin: 0 0 12px;
+  }
+
+  .empty-sub {
+    margin: 0 auto 26px;
+    max-width: 44ch;
+    font-size: 14.5px;
+    color: #45434d;
+  }
+
+  .empty-sub code {
+    font-family: var(--mono);
+    font-size: 13px;
+    background: var(--field);
+    padding: 1px 5px;
+    border-radius: 2px;
+  }
+
+  .empty-cta {
+    display: inline-block;
+    background: var(--ink);
+    color: #fff;
+    text-decoration: none;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 13px 22px;
+    border-radius: 2px;
+    transition: background 0.15s ease;
+  }
+
+  .empty-cta:hover { background: var(--orange); }
+
+  /* ── Rules ────────────────────────────────────────── */
+
+  .rules {
+    border-top: 1px solid var(--hair);
+    margin-top: 26px;
+    padding: 24px 0 60px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 24px;
+  }
+
+  .rule h3 {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin: 0 0 6px;
+  }
+
+  .rule p {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: #45434d;
+  }
+
+  .rule a { color: inherit; }
+
+  @media (max-width: 620px) {
+    .wrap { padding: 0 18px; }
+    .row { grid-template-columns: 30px minmax(0, 1fr) auto; gap: 12px; padding: 15px 16px; }
+    .row.lead .name { font-size: 21px; }
+    .row.lead .pts { font-size: 32px; }
+    .side-stats { gap: 18px; }
+  }
+
+  /* ── Motion ───────────────────────────────────────── */
+
+  .rise {
+    animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(9px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  a:focus-visible,
+  .row:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rise { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-top">
+      <span class="eyebrow">MetaMask Design · Bug Bash</span>
+      <span class="eyebrow" id="window-label">1–30 September 2026</span>
+    </div>
+    <h1>Squash<br />season</h1>
+    <div class="hero-stats">
+      <div class="tally">
+        <span class="tally-num" id="total">0</span>
+        <span class="tally-label">bugs<br />fixed</span>
+      </div>
+      <div class="side-stats">
+        <div class="side-stat"><span class="n" id="players">0</span><span class="k">on the board</span></div>
+        <div class="side-stat"><span class="n" id="open">0</span><span class="k">in flight</span></div>
+        <div class="side-stat"><span class="n" id="prize">$200</span><span class="k">to the winner</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="board">
+    <div class="board-head">
+      <span class="eyebrow">Standings</span>
+      <span class="stamp" id="stamp">—</span>
+    </div>
+    <div id="rows"></div>
+  </section>
+
+  <section class="rules">
+    <div class="rule">
+      <h3>How to enter</h3>
+      <p>Pick any open issue labelled <code>type-bug</code> and <code>design</code> — new or old. Fix it in Cursor, and put <code>Fixes #123</code> in your PR.</p>
+    </div>
+    <div class="rule">
+      <h3>How points work</h3>
+      <p>One point per issue closed by a merged PR you authored yourself. Counted per issue, so a fix split across several PRs still scores once.</p>
+    </div>
+    <div class="rule">
+      <h3>What counts</h3>
+      <p>Any labelled bug you close yourself, however old. Found something new? File it with both labels first, then fix it.</p>
+    </div>
+    <div class="rule">
+      <h3>Closing time</h3>
+      <p>PRs must merge by 30 September. Get review requests in early — nothing counts until it's on main.</p>
+    </div>
+  </section>
+</main>
+
+<script>
+  // Falls back to this shape if data.json hasn't been generated yet.
+  const SEED = {
+    updatedAt: new Date().toISOString(),
+    window: { start: "2026-09-01", end: "2026-09-30" },
+    prize: "$200",
+    totals: { fixes: 0, designers: 0, inFlight: 0, fixedByOthers: 0 },
+    standings: []
+  };
+
+  const fmtRange = (w) => {
+    const s = new Date(w.start + "T12:00:00Z");
+    const e = new Date(w.end + "T12:00:00Z");
+    const month = e.toLocaleDateString("en-US", { month: "long", timeZone: "UTC" });
+    return `${s.getUTCDate()}–${e.getUTCDate()} ${month} ${e.getUTCFullYear()}`;
+  };
+
+  const fmtStamp = (iso) =>
+    "Updated " +
+    new Date(iso).toLocaleString("en-US", {
+      month: "short", day: "numeric", hour: "numeric", minute: "2-digit"
+    });
+
+  function marks(n, max) {
+    const ghosts = Math.max(0, Math.min(6, max ? max - n : 3) );
+    let html = "";
+    for (let i = 0; i < n; i++) html += '<span class="mark"></span>';
+    for (let i = 0; i < ghosts; i++) html += '<span class="mark ghost"></span>';
+    return html;
+  }
+
+  function render(d) {
+    document.getElementById("window-label").textContent = fmtRange(d.window);
+    document.getElementById("total").textContent = d.totals.fixes;
+    document.getElementById("players").textContent =
+      d.standings.filter((r) => r.points > 0).length;
+    document.getElementById("open").textContent = d.totals.inFlight ?? 0;
+    document.getElementById("prize").textContent = d.prize;
+    document.getElementById("stamp").textContent = fmtStamp(d.updatedAt);
+
+    const max = d.standings.reduce((m, r) => Math.max(m, r.points), 0);
+    const preSeason = max === 0; // nobody has scored — don't imply an order
+    const rows = document.getElementById("rows");
+
+    const listed = preSeason
+      ? [...d.standings].sort((a, b) => a.name.localeCompare(b.name))
+      : d.standings;
+
+    const labels = d.labels || ["type-bug", "design"];
+    const repoPath = d.repo || "MetaMask/metamask-mobile";
+
+    // Designers no longer necessarily file what they fix, so audit by PR author.
+    const auditUrl = (login) =>
+      "https://github.com/" +
+      repoPath +
+      "/pulls?q=" +
+      encodeURIComponent(
+        ["is:pr", "is:merged", `author:${login}`,
+         `merged:${d.window.start}..${d.window.end}`, "sort:updated-desc"].join(" ")
+      );
+
+    // Day one is an empty board by design — nobody is seeded. Make it an
+    // invitation with the labels pre-applied rather than a dead row.
+    if (!d.standings.length) {
+      const backlogUrl =
+        "https://github.com/" +
+        repoPath +
+        "/issues?q=" +
+        encodeURIComponent(
+          ["is:issue", "is:open", ...labels.map((l) => `label:${l}`), "sort:created-desc"].join(" ")
+        );
+
+      document.querySelector(".board-head .eyebrow").textContent = "Nobody yet";
+      rows.innerHTML = `
+        <div class="empty rise">
+          <p class="empty-lead">The board opens with the first fix.</p>
+          <p class="empty-sub">Close any issue labelled ${labels
+            .map((l) => `<code>${l}</code>`)
+            .join(" and ")} — the backlog counts. You'll be alone up there for a while.</p>
+          <a class="empty-cta" href="${backlogUrl}">Browse the backlog &rarr;</a>
+        </div>`;
+      return;
+    }
+
+    document.querySelector(".board-head .eyebrow").textContent = preSeason
+      ? "Entrants"
+      : "Standings";
+
+    rows.innerHTML = listed
+      .map((r, i) => {
+        const lead = i === 0 && r.points > 0;
+        return `
+          <a class="row ${lead ? "lead" : ""} rise" href="${auditUrl(r.login)}"
+             style="animation-delay:${i * 45}ms"
+             title="See ${r.name}'s Bug Bash issues on GitHub">
+            <span class="rank">${preSeason ? "&middot;" : String(i + 1).padStart(2, "0")}</span>
+            <div class="who">
+              <div class="name">${r.name}</div>
+              <div class="handle">@${r.login}${r.inFlight ? ` · ${r.inFlight} in flight` : ""}</div>
+              <div class="marks">${marks(r.points, max)}</div>
+            </div>
+            <div class="pts ${r.points ? "" : "zero"}">${r.points}<small>${r.points === 1 ? "fix" : "fixes"}</small></div>
+          </a>`;
+      })
+      .join("");
+  }
+
+  fetch("data.json", { cache: "no-store" })
+    .then((r) => (r.ok ? r.json() : Promise.reject()))
+    .then(render)
+    .catch(() => render(SEED));
+</script>
+
+</body>
+</html>

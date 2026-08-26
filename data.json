@@ -1,0 +1,9 @@
+{
+  "updatedAt": "2026-09-01T14:00:00.000Z",
+  "repo": "MetaMask/metamask-mobile",
+  "labels": ["type-bug", "design"],
+  "window": { "start": "2026-09-01", "end": "2026-09-30" },
+  "prize": "$200",
+  "totals": { "fixes": 0, "designers": 15, "inFlight": 0, "fixedByOthers": 0 },
+  "standings": []
+}
