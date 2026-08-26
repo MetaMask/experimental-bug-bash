@@ -18,10 +18,13 @@
 import { writeFile } from "node:fs/promises";
 
 // ── Contest config ──────────────────────────────────────────────
-const repo = "MetaMask/metamask-mobile";
+// TEMPORARY: fixture repo so we can preview scoring on Pages.
+// Revert to MetaMask/metamask-mobile, labels ["type-bug", "design"],
+// window 2026-09-01..2026-09-30 before the contest.
+const repo = "andrewjcohen/bug-bash-scorer-fixture";
 // An issue must carry ALL of these to count.
-const labels = ["type-bug", "design"];
-const win = { start: "2026-09-01", end: "2026-09-30" };
+const labels = ["type-bug", "Design"];
+const win = { start: "2026-08-26", end: "2026-08-31" };
 const prize = "$200";
 
 // Who's eligible. Handles only — display names come from GitHub profiles.
