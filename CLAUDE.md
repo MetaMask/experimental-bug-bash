@@ -4,7 +4,7 @@ Static leaderboard for a September 2026 design bug-squashing contest at
 MetaMask. Designers on the `DESIGNERS` list (in `scripts/build-leaderboard.mjs`)
 fix `type-bug` + `design` labeled issues in `MetaMask/metamask-mobile` — any
 age, backlog counts. Most fixes by month end wins $200. A GitHub Action rebuilds
-standings on a cron, publishes to Pages, and posts the top five to Slack.
+standings on a cron and publishes to Pages.
 
 ## Layout
 
@@ -15,7 +15,7 @@ standings on a cron, publishes to Pages, and posts the top five to Slack.
 - `data.json` — generated. Committed so the page renders before the first
   Action run. Shape: `totals.{fixes,designers,inFlight,fixedByOthers}` and a
   `standings[]` of `{login,name,points,inFlight,fixes[],lastFixAt}`.
-- `.github/workflows/leaderboard.yml` — cron + Pages deploy + Slack post.
+- `.github/workflows/leaderboard.yml` — cron + Pages deploy.
 
 ## Scoring invariants — do not change without asking
 

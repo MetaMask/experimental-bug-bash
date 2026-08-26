@@ -1,7 +1,7 @@
 # Bug Bash leaderboard
 
 Static leaderboard for the September design bug bash. A GitHub Action rebuilds
-standings on a cron, publishes to Pages, and posts the top five to Slack.
+standings on a cron and publishes to Pages.
 
 Five files. No token, no dependencies.
 
@@ -40,12 +40,8 @@ both labels, since the backlog is where entries come from.
 2. **Nothing to create.** `type-bug` and `design` already exist in
    `metamask-mobile`. Confirm both spellings match the repo exactly — a
    mismatch returns an empty board, not an error.
-3. **Add the Slack webhook** (optional) under Settings → Secrets and variables →
-   Actions: `SLACK_WEBHOOK_URL`. The Slack step skips itself if it's missing.
-   Also add a variable `SITE_URL` once Pages gives you a URL — it's the link in
-   the Slack message.
-4. **Enable Pages**: Settings → Pages → Source → GitHub Actions.
-5. **Run it once by hand** — Actions → Bug Bash leaderboard → Run workflow.
+3. **Enable Pages**: Settings → Pages → Source → GitHub Actions.
+4. **Run it once by hand** — Actions → Bug Bash leaderboard → Run workflow.
 
 To change the repo, labels, dates, or prize, edit the config block at the top of
 `scripts/build-leaderboard.mjs`. `labels` is an array and every entry must be
