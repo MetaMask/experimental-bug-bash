@@ -1,0 +1,133 @@
+name: Bug Bash leaderboard
+
+on:
+  schedule:
+    # Hourly. GitHub may delay cron a few minutes.
+    - cron: "0 * * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "scripts/build-leaderboard.mjs"
+      - ".github/workflows/leaderboard.yml"
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      # Snapshot the live board before we overwrite it, so Slack can skip
+      # unchanged standings instead of posting the same top five every hour.
+      - name: Snapshot published board
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+        run: |
+          url="${SITE_URL:-https://andrewjcohen.github.io/design-bug-bash/}"
+          curl -fsS "${url%/}/data.json" -o published.json \
+            || echo '{"standings":[]}' > published.json
+
+      - name: Rebuild standings
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/build-leaderboard.mjs
+
+      - name: Print roster size
+        run: node -e 'const d=JSON.parse(require("fs").readFileSync("data.json","utf8")); console.log("Roster size:", d.totals.designers);'
+
+      - name: Package site
+        run: |
+          mkdir -p _site
+          cp index.html data.json _site/
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: standings
+          path: |
+            data.json
+            published.json
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+  slack:
+    needs: [build, deploy]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: standings
+
+      - name: Post top five to Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SITE_URL: ${{ vars.SITE_URL || needs.deploy.outputs.page_url }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "No SLACK_WEBHOOK_URL; skipping Slack."
+            exit 0
+          fi
+          node <<'NODE'
+          const fs = require("fs");
+          const site = (process.env.SITE_URL || "").replace(/\/$/, "");
+          const topOf = (d) => (d.standings || [])
+            .filter((r) => r.points > 0)
+            .slice(0, 5)
+            .map((r) => ({ login: r.login, name: r.name, points: r.points }));
+
+          const next = JSON.parse(fs.readFileSync("data.json", "utf8"));
+          const top = topOf(next);
+
+          if (!top.length) {
+            console.log("Nobody has scored; skipping Slack.");
+            process.exit(0);
+          }
+
+          let prev = [];
+          try {
+            prev = topOf(JSON.parse(fs.readFileSync("published.json", "utf8")));
+          } catch { /* first run */ }
+
+          if (JSON.stringify(prev) === JSON.stringify(top)) {
+            console.log("Top five unchanged; skipping Slack.");
+            process.exit(0);
+          }
+
+          const lines = top.map((r, i) => `${i + 1}. ${r.name} — ${r.points}`);
+          const text = ["Bug Bash — top five", ...lines, "", site].filter(Boolean).join("\n");
+
+          fetch(process.env.SLACK_WEBHOOK_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text }),
+          }).then(async (res) => {
+            if (!res.ok) throw new Error(`Slack ${res.status} ${await res.text()}`);
+            console.log("Posted top five to Slack.");
+          }).catch((err) => {
+            console.error(err);
+            process.exit(1);
+          });
+          NODE
