@@ -380,7 +380,7 @@
     <div class="hero-stats">
       <div class="tally">
         <span class="tally-num" id="total">0</span>
-        <span class="tally-label">bugs fixed</span>
+        <span class="tally-label">PRs merged</span>
       </div>
       <div class="side-stats">
         <div class="side-stat"><span class="n" id="players">0</span><span class="k">on the board</span></div>
@@ -403,15 +403,15 @@
   <section class="rules">
     <div class="rule">
       <h3>How to enter</h3>
-      <p>Pick any open issue labelled <code>design-papercut</code> in <code>metamask-mobile</code> or <code>metamask-extension</code> — new or old. Fix it, and put <code>Fixes #123</code> or <code>Closes #123</code> in your PR.</p>
+      <p>Open a pull request you author yourself in <code>metamask-mobile</code>, <code>metamask-extension</code>, or <code>metamask-design-system</code> — and get it merged.</p>
     </div>
     <div class="rule">
       <h3>How points work</h3>
-      <p>One point per issue closed by a merged PR you authored yourself. Counted per issue, so a fix split across several PRs still scores once.</p>
+      <p>One point per merged PR you authored. No issue labels required. Open PRs show as in flight but score nothing until they land.</p>
     </div>
     <div class="rule">
       <h3>What counts</h3>
-      <p>Any labelled bug you close yourself, however old. Found something new? File it with the <code>design-papercut</code> label first, then fix it.</p>
+      <p>Any of your PRs merged into those three repos during September. Work outside the list of repos doesn't score.</p>
     </div>
     <div class="rule">
       <h3>Closing time</h3>
@@ -426,10 +426,24 @@
     updatedAt: new Date().toISOString(),
     window: { start: "2026-09-01", end: "2026-09-30" },
     prize: "$250",
-    labels: ["design-papercut"],
-    repos: ["MetaMask/metamask-mobile", "MetaMask/metamask-extension"],
-    totals: { fixes: 0, designers: 0, inFlight: 0, fixedByOthers: 0 },
-    standings: []
+    repos: [
+      "MetaMask/metamask-mobile",
+      "MetaMask/metamask-extension",
+      "MetaMask/metamask-design-system",
+    ],
+    totals: { fixes: 0, designers: 10, inFlight: 0 },
+    standings: [
+      { login: "alidotforrest", name: "alidotforrest", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
+      { login: "amamahfer", name: "amamahfer", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
+      { login: "andrewchra", name: "andrewchra", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
+      { login: "jessup", name: "jessup", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
+      { login: "joshuaphiloctete", name: "joshuaphiloctete", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
+      { login: "nikki-p-h-12", name: "nikki-p-h-12", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
+      { login: "ragkandala", name: "ragkandala", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
+      { login: "rmkk1234", name: "rmkk1234", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
+      { login: "thatsjustthewayitis", name: "thatsjustthewayitis", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
+      { login: "yanrong-chen", name: "yanrong-chen", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
+    ]
   };
 
   const fmtRange = (w) => {
@@ -450,7 +464,8 @@
     });
 
   function marks(n, max) {
-    const ghosts = Math.max(0, Math.min(6, max ? max - n : 3) );
+    // No ghosts while the field is all zeros — every row would look the same.
+    const ghosts = max === 0 ? 0 : Math.max(0, Math.min(6, max - n));
     let html = "";
     for (let i = 0; i < n; i++) html += '<span class="mark"></span>';
     for (let i = 0; i < ghosts; i++) html += '<span class="mark ghost"></span>';
@@ -466,22 +481,20 @@
     document.getElementById("prize").textContent = d.prize;
     document.getElementById("stamp").textContent = fmtStamp(d.updatedAt);
 
-    const active = d.standings.filter((r) => r.points > 0 || (r.inFlight ?? 0) > 0);
-    const max = active.reduce((m, r) => Math.max(m, r.points), 0);
+    const max = d.standings.reduce((m, r) => Math.max(m, r.points), 0);
     const preSeason = max === 0; // nobody has scored — don't imply an order
+    const listed = preSeason
+      ? [...d.standings].sort((a, b) => a.name.localeCompare(b.name))
+      : d.standings;
     const rows = document.getElementById("rows");
 
-    const listed = preSeason
-      ? [...active].sort((a, b) => a.name.localeCompare(b.name))
-      : active;
+    const repoList = d.repos || [
+      "MetaMask/metamask-mobile",
+      "MetaMask/metamask-extension",
+      "MetaMask/metamask-design-system",
+    ];
 
-    const labels = d.labels || ["design-papercut"];
-    const repoList =
-      d.repos ||
-      (d.repo ? [d.repo] : ["MetaMask/metamask-mobile", "MetaMask/metamask-extension"]);
-
-    // Designers no longer necessarily file what they fix, so audit by PR author
-    // across every tracked repo (GitHub ORs multiple repo: terms).
+    // Audit by PR author across every tracked repo (GitHub ORs multiple repo: terms).
     const auditUrl = (login) =>
       "https://github.com/search?type=issues&q=" +
       encodeURIComponent(
@@ -495,33 +508,6 @@
         ].join(" ")
       );
 
-    // Day one is an empty board by design — zeros aren't listed. Make it an
-    // invitation with the labels pre-applied rather than a dead row.
-    if (!listed.length) {
-      const backlogUrl =
-        "https://github.com/search?type=issues&q=" +
-        encodeURIComponent(
-          [
-            "is:issue",
-            "is:open",
-            ...repoList.map((r) => `repo:${r}`),
-            ...labels.map((l) => `label:${l}`),
-            "sort:created-desc",
-          ].join(" ")
-        );
-
-      document.querySelector(".board-head .eyebrow").textContent = "Nobody yet";
-      rows.innerHTML = `
-        <div class="empty rise">
-          <p class="empty-lead">The board opens with the first fix.</p>
-          <p class="empty-sub">Close any issue labelled ${labels
-            .map((l) => `<code>${l}</code>`)
-            .join(" and ")} — the backlog counts. You'll be alone up there for a while.</p>
-          <a class="empty-cta" href="${backlogUrl}">Browse the backlog &rarr;</a>
-        </div>`;
-      return;
-    }
-
     document.querySelector(".board-head .eyebrow").textContent = preSeason
       ? "Entrants"
       : "Standings";
@@ -532,14 +518,14 @@
         return `
           <a class="row ${lead ? "lead" : ""} rise" href="${auditUrl(r.login)}"
              style="animation-delay:${i * 45}ms"
-             title="See ${r.name}'s Bug Bash issues on GitHub">
+             title="See ${r.name}'s merged PRs on GitHub">
             <span class="rank">${preSeason || !r.points ? "&middot;" : String(i + 1).padStart(2, "0")}</span>
             <div class="who">
               <div class="name">${r.name}</div>
               <div class="handle">@${r.login}${r.inFlight ? ` · ${r.inFlight} in flight` : ""}</div>
               <div class="marks">${marks(r.points, max)}</div>
             </div>
-            <div class="pts ${r.points ? "" : "zero"}">${r.points}<small>${r.points === 1 ? "fix" : "fixes"}</small></div>
+            <div class="pts ${r.points ? "" : "zero"}">${r.points}<small>${r.points === 1 ? "PR" : "PRs"}</small></div>
           </a>`;
       })
       .join("");

@@ -2,11 +2,22 @@
   "updatedAt": "2026-09-01T14:00:00.000Z",
   "repos": [
     "MetaMask/metamask-mobile",
-    "MetaMask/metamask-extension"
+    "MetaMask/metamask-extension",
+    "MetaMask/metamask-design-system"
   ],
-  "labels": ["design-papercut"],
   "window": { "start": "2026-09-01", "end": "2026-09-30" },
   "prize": "$250",
-  "totals": { "fixes": 0, "designers": 15, "inFlight": 0, "fixedByOthers": 0 },
-  "standings": []
+  "totals": { "fixes": 0, "designers": 10, "inFlight": 0 },
+  "standings": [
+    { "login": "alidotforrest", "name": "alidotforrest", "points": 0, "inFlight": 0, "fixes": [], "lastFixAt": null },
+    { "login": "amamahfer", "name": "amamahfer", "points": 0, "inFlight": 0, "fixes": [], "lastFixAt": null },
+    { "login": "andrewchra", "name": "andrewchra", "points": 0, "inFlight": 0, "fixes": [], "lastFixAt": null },
+    { "login": "jessup", "name": "jessup", "points": 0, "inFlight": 0, "fixes": [], "lastFixAt": null },
+    { "login": "joshuaphiloctete", "name": "joshuaphiloctete", "points": 0, "inFlight": 0, "fixes": [], "lastFixAt": null },
+    { "login": "nikki-p-h-12", "name": "nikki-p-h-12", "points": 0, "inFlight": 0, "fixes": [], "lastFixAt": null },
+    { "login": "ragkandala", "name": "ragkandala", "points": 0, "inFlight": 0, "fixes": [], "lastFixAt": null },
+    { "login": "rmkk1234", "name": "rmkk1234", "points": 0, "inFlight": 0, "fixes": [], "lastFixAt": null },
+    { "login": "thatsjustthewayitis", "name": "thatsjustthewayitis", "points": 0, "inFlight": 0, "fixes": [], "lastFixAt": null },
+    { "login": "yanrong-chen", "name": "yanrong-chen", "points": 0, "inFlight": 0, "fixes": [], "lastFixAt": null }
+  ]
 }
