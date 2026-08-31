@@ -43,6 +43,17 @@ if (!TOKEN) {
   process.exit(1);
 }
 
+// Inclusive UTC bounds. GitHub's `merged:` search is day-granular and can be
+// timezone-fuzzy at the edges, so we re-check mergedAt after the query.
+const startsAt = new Date(`${win.start}T00:00:00.000Z`);
+const endsAt = new Date(`${win.end}T23:59:59.999Z`);
+
+const inWindow = (iso) => {
+  if (!iso) return false;
+  const at = new Date(iso);
+  return at >= startsAt && at <= endsAt;
+};
+
 const QUERY = `
   query($q: String!, $cursor: String) {
     search(query: $q, type: ISSUE, first: 50, after: $cursor) {
@@ -139,6 +150,7 @@ for (const login of DESIGNERS) {
   ]);
 
   for (const pr of merged) {
+    if (!pr.merged || !inWindow(pr.mergedAt)) continue;
     scorer.points += 1;
     scorer.fixes.push({
       repo: pr.repository?.nameWithOwner,
