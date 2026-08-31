@@ -7,9 +7,9 @@ Five files. No token, no dependencies.
 
 ## The rule
 
-One point per issue carrying **both** `type-bug` and `design` that you close
-with a merged PR you authored, merged by 30 September. The issue can be any age
-— fixing old backlog bugs counts the same as fixing something you just found.
+One point per issue labelled `design-papercut` that you close with a merged PR
+you authored, merged by 30 September. The issue can be any age — fixing old
+backlog bugs counts the same as fixing something you just found.
 
 - **Counted per issue.** Splitting one fix across several PRs still scores once.
 - **Eligibility is the `DESIGNERS` list** at the top of the build script. Who
@@ -32,14 +32,13 @@ board falls back to handles and still builds.
 To add a designer, add their handle and push. They appear on the next run.
 
 Day one shows a "browse the backlog" call to action linking to open issues with
-both labels, since the backlog is where entries come from.
+the `design-papercut` label, since the backlog is where entries come from.
 
 ## Setup (about 15 minutes)
 
 1. **Create this repo.**
-2. **Nothing to create.** `type-bug` and `design` already exist in
-   `metamask-mobile`. Confirm both spellings match the repo exactly — a
-   mismatch returns an empty board, not an error.
+2. **Confirm the label.** `design-papercut` must exist in `metamask-mobile`
+   with that exact spelling — a mismatch returns an empty board, not an error.
 3. **Enable Pages**: Settings → Pages → Source → GitHub Actions.
 4. **Run it once by hand** — Actions → Bug Bash leaderboard → Run workflow.
 
@@ -80,15 +79,15 @@ system work is in scope, that's a small change to accept an array.
 
 **Watch the merge queue in week four.** A designer can do the best work on the
 team and still finish with PRs stuck in review. Give eng leads a heads-up to
-prioritize anything labeled `type-bug` + `design`, or you have accidentally measured review
+prioritize anything labeled `design-papercut`, or you have accidentally measured review
 latency instead of design output.
 
 **Fixes by other people are tracked but don't score.** They land in
 `totals.fixedByOthers`. Useful signal, no points.
 
-**A label typo shows as an empty board.** If `type-bug` is actually `type:bug`
-in the repo, the query returns nothing and the page looks like nobody entered.
-Run the workflow by hand once against a real labeled issue before the 1st.
+**A label typo shows as an empty board.** If the label spelling doesn't match
+the repo exactly, the query returns nothing and the page looks like nobody
+entered. Run the workflow by hand once against a real labeled issue before the 1st.
 
 **The first-PR cliff is the real risk.** Pods, Android SDK, env vars, yarn.
 Someone who burns three hours before the app boots is out of the contest and

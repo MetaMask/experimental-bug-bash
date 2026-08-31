@@ -20,9 +20,9 @@ import { writeFile } from "node:fs/promises";
 // ── Contest config ──────────────────────────────────────────────
 const repo = "MetaMask/metamask-mobile";
 // An issue must carry ALL of these to count.
-const labels = ["type-bug", "design"];
+const labels = ["design-papercut"];
 const win = { start: "2026-09-01", end: "2026-09-30" };
-const prize = "$200";
+const prize = "$250";
 
 // Who's eligible. Handles only — display names come from GitHub profiles.
 // Add a starter here and they appear on the board on the next run.

@@ -2,8 +2,8 @@
 
 Static leaderboard for a September 2026 design bug-squashing contest at
 MetaMask. Designers on the `DESIGNERS` list (in `scripts/build-leaderboard.mjs`)
-fix `type-bug` + `design` labeled issues in `MetaMask/metamask-mobile` — any
-age, backlog counts. Most fixes by month end wins $200. A GitHub Action rebuilds
+fix `design-papercut` labeled issues in `MetaMask/metamask-mobile` — any
+age, backlog counts. Most fixes by month end wins $250. A GitHub Action rebuilds
 standings on a cron and publishes to Pages.
 
 ## Layout

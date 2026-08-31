@@ -385,7 +385,7 @@
       <div class="side-stats">
         <div class="side-stat"><span class="n" id="players">0</span><span class="k">on the board</span></div>
         <div class="side-stat"><span class="n" id="open">0</span><span class="k">in flight</span></div>
-        <div class="side-stat"><span class="n" id="prize">$200</span><span class="k">to the winner</span></div>
+        <div class="side-stat"><span class="n" id="prize">$250</span><span class="k">to the winner</span></div>
       </div>
     </div>
   </div>
@@ -403,7 +403,7 @@
   <section class="rules">
     <div class="rule">
       <h3>How to enter</h3>
-      <p>Pick any open issue labelled <code>type-bug</code> and <code>design</code> — new or old. Fix it, and put <code>Fixes #123</code> or <code>Closes #123</code> in your PR.</p>
+      <p>Pick any open issue labelled <code>design-papercut</code> — new or old. Fix it, and put <code>Fixes #123</code> or <code>Closes #123</code> in your PR.</p>
     </div>
     <div class="rule">
       <h3>How points work</h3>
@@ -411,7 +411,7 @@
     </div>
     <div class="rule">
       <h3>What counts</h3>
-      <p>Any labelled bug you close yourself, however old. Found something new? File it with both labels first, then fix it.</p>
+      <p>Any labelled bug you close yourself, however old. Found something new? File it with the <code>design-papercut</code> label first, then fix it.</p>
     </div>
     <div class="rule">
       <h3>Closing time</h3>
@@ -425,7 +425,8 @@
   const SEED = {
     updatedAt: new Date().toISOString(),
     window: { start: "2026-09-01", end: "2026-09-30" },
-    prize: "$200",
+    prize: "$250",
+    labels: ["design-papercut"],
     totals: { fixes: 0, designers: 0, inFlight: 0, fixedByOthers: 0 },
     standings: []
   };
@@ -473,7 +474,7 @@
       ? [...active].sort((a, b) => a.name.localeCompare(b.name))
       : active;
 
-    const labels = d.labels || ["type-bug", "design"];
+    const labels = d.labels || ["design-papercut"];
     const repoPath = d.repo || "MetaMask/metamask-mobile";
 
     // Designers no longer necessarily file what they fix, so audit by PR author.
