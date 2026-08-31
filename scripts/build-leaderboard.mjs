@@ -15,9 +15,8 @@ import { writeFile } from "node:fs/promises";
 
 // ── Contest config ──────────────────────────────────────────────
 const repos = [
-  "MetaMask/metamask-mobile",
   "MetaMask/metamask-extension",
-  "MetaMask/metamask-design-system",
+  "MetaMask/metamask-mobile",
 ];
 const win = { start: "2026-09-01", end: "2026-09-30" };
 const prize = "$250";

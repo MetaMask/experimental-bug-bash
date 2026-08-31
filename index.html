@@ -402,16 +402,12 @@
 
   <section class="rules">
     <div class="rule">
-      <h3>How to enter</h3>
-      <p>Open a pull request you author yourself in <code>metamask-mobile</code>, <code>metamask-extension</code>, or <code>metamask-design-system</code> — and get it merged.</p>
+      <h3>How to score</h3>
+      <p>Merge a pull request into <code>metamask-extension</code> or <code>metamask-mobile</code> for a point.</p>
     </div>
     <div class="rule">
-      <h3>How points work</h3>
-      <p>One point per merged PR you authored. No issue labels required. Open PRs show as in flight but score nothing until they land.</p>
-    </div>
-    <div class="rule">
-      <h3>What counts</h3>
-      <p>Any of your PRs merged into those three repos during September. Work outside the list of repos doesn't score.</p>
+      <h3>Who counts</h3>
+      <p>You have to author the PR yourself. Open PRs show as in flight but score nothing until they land.</p>
     </div>
     <div class="rule">
       <h3>Closing time</h3>
@@ -427,9 +423,8 @@
     window: { start: "2026-09-01", end: "2026-09-30" },
     prize: "$250",
     repos: [
-      "MetaMask/metamask-mobile",
       "MetaMask/metamask-extension",
-      "MetaMask/metamask-design-system",
+      "MetaMask/metamask-mobile",
     ],
     totals: { fixes: 0, designers: 10, inFlight: 0 },
     standings: [
@@ -489,9 +484,8 @@
     const rows = document.getElementById("rows");
 
     const repoList = d.repos || [
-      "MetaMask/metamask-mobile",
       "MetaMask/metamask-extension",
-      "MetaMask/metamask-design-system",
+      "MetaMask/metamask-mobile",
     ];
 
     // Audit by PR author across every tracked repo (GitHub ORs multiple repo: terms).

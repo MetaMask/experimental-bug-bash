@@ -7,9 +7,8 @@ Five files. No token, no dependencies.
 
 ## The rule
 
-One point per pull request you author that merges into `metamask-mobile`,
-`metamask-extension`, or `metamask-design-system` by 30 September. No issue
-labels required.
+One point per pull request you author that merges into `metamask-extension` or
+`metamask-mobile` by 30 September. No issue labels required.
 
 - **Counted per merged PR.** Each of your merges scores once.
 - **Eligibility is the `DESIGNERS` list** at the top of the build script.
@@ -65,7 +64,7 @@ it.
 
 **Watch the merge queue in week four.** A designer can do the best work on the
 team and still finish with PRs stuck in review. Give eng leads a heads-up to
-prioritize designer PRs in the three tracked repos, or you have accidentally
+prioritize designer PRs in extension and mobile, or you have accidentally
 measured review latency instead of output.
 
 **The first-PR cliff is the real risk.** Pods, Android SDK, env vars, yarn.

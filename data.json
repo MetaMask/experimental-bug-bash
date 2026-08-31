@@ -1,9 +1,8 @@
 {
   "updatedAt": "2026-09-01T14:00:00.000Z",
   "repos": [
-    "MetaMask/metamask-mobile",
     "MetaMask/metamask-extension",
-    "MetaMask/metamask-design-system"
+    "MetaMask/metamask-mobile"
   ],
   "window": { "start": "2026-09-01", "end": "2026-09-30" },
   "prize": "$250",

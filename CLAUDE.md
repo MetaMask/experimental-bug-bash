@@ -2,9 +2,9 @@
 
 Static leaderboard for a September 2026 design bug-squashing contest at
 MetaMask. Designers on the `DESIGNERS` list (in `scripts/build-leaderboard.mjs`)
-score one point per merged PR they author in `metamask-mobile`,
-`metamask-extension`, or `metamask-design-system`. Most merges by month end
-wins $250. A GitHub Action rebuilds standings on a cron and publishes to Pages.
+score one point per merged PR they author in `metamask-extension` or
+`metamask-mobile`. Most merges by month end wins $250. A GitHub Action rebuilds
+standings on a cron and publishes to Pages.
 
 ## Layout
 
