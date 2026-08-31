@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Builds data.json for the Bug Bash leaderboard.
+ * Builds data.json for the PR Party leaderboard.
  *
  * Scoring rule: one point per merged pull request authored by someone on the
  * DESIGNERS list, merged inside the contest window, in any repo in `repos`.

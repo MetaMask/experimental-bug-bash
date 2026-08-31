@@ -1,6 +1,6 @@
-# Bug Bash leaderboard
+# PR Party leaderboard
 
-Static leaderboard for the September design bug bash. A GitHub Action rebuilds
+Static leaderboard for the September design PR party. A GitHub Action rebuilds
 standings on a cron and publishes to Pages.
 
 Five files. No token, no dependencies.
@@ -35,7 +35,7 @@ of ranks so it doesn't imply a winner.
 
 1. **Create this repo.**
 2. **Enable Pages**: Settings → Pages → Source → GitHub Actions.
-3. **Run it once by hand** — Actions → Bug Bash leaderboard → Run workflow.
+3. **Run it once by hand** — Actions → PR Party leaderboard → Run workflow.
 
 To change the repos, dates, prize, or roster, edit the config block at the top
 of `scripts/build-leaderboard.mjs`. `repos` is an array; merges in every entry

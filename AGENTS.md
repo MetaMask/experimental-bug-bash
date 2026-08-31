@@ -1,6 +1,6 @@
-# Bug Bash leaderboard
+# PR Party leaderboard
 
-Static leaderboard for a September 2026 design bug-squashing contest at
+Static leaderboard for a September 2026 design contest at
 MetaMask. Designers on the `DESIGNERS` list (in `scripts/build-leaderboard.mjs`)
 score one point per merged PR they author in `metamask-extension` or
 `metamask-mobile`. Most merges by month end wins $250. A GitHub Action rebuilds
