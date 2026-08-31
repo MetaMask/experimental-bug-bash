@@ -1,22 +1,141 @@
 {
-  "updatedAt": "2026-09-01T14:00:00.000Z",
+  "updatedAt": "2026-08-31T18:55:00.982Z",
+  "org": "MetaMask",
+  "team": "design",
   "repos": [
     "MetaMask/metamask-extension",
     "MetaMask/metamask-mobile"
   ],
-  "window": { "start": "2026-09-01", "end": "2026-09-30" },
+  "window": {
+    "start": "2026-09-01",
+    "end": "2026-09-30"
+  },
   "prize": "$250",
-  "totals": { "fixes": 0, "designers": 10, "inFlight": 0 },
+  "totals": {
+    "fixes": 0,
+    "designers": 15,
+    "inFlight": 58
+  },
   "standings": [
-    { "login": "alidotforrest", "name": "alidotforrest", "points": 0, "inFlight": 0, "fixes": [], "lastFixAt": null },
-    { "login": "amamahfer", "name": "amamahfer", "points": 0, "inFlight": 0, "fixes": [], "lastFixAt": null },
-    { "login": "andrewchra", "name": "andrewchra", "points": 0, "inFlight": 0, "fixes": [], "lastFixAt": null },
-    { "login": "jessup", "name": "jessup", "points": 0, "inFlight": 0, "fixes": [], "lastFixAt": null },
-    { "login": "joshuaphiloctete", "name": "joshuaphiloctete", "points": 0, "inFlight": 0, "fixes": [], "lastFixAt": null },
-    { "login": "nikki-p-h-12", "name": "nikki-p-h-12", "points": 0, "inFlight": 0, "fixes": [], "lastFixAt": null },
-    { "login": "ragkandala", "name": "ragkandala", "points": 0, "inFlight": 0, "fixes": [], "lastFixAt": null },
-    { "login": "rmkk1234", "name": "rmkk1234", "points": 0, "inFlight": 0, "fixes": [], "lastFixAt": null },
-    { "login": "thatsjustthewayitis", "name": "thatsjustthewayitis", "points": 0, "inFlight": 0, "fixes": [], "lastFixAt": null },
-    { "login": "yanrong-chen", "name": "yanrong-chen", "points": 0, "inFlight": 0, "fixes": [], "lastFixAt": null }
+    {
+      "login": "alidotforrest",
+      "name": "alidotforrest",
+      "points": 0,
+      "inFlight": 1,
+      "fixes": [],
+      "lastFixAt": null
+    },
+    {
+      "login": "amandaye0h",
+      "name": "Amanda Yeoh",
+      "points": 0,
+      "inFlight": 19,
+      "fixes": [],
+      "lastFixAt": null
+    },
+    {
+      "login": "andrewjcohen",
+      "name": "Andrew Cohen",
+      "points": 0,
+      "inFlight": 1,
+      "fixes": [],
+      "lastFixAt": null
+    },
+    {
+      "login": "andrewchra",
+      "name": "andrewchra",
+      "points": 0,
+      "inFlight": 7,
+      "fixes": [],
+      "lastFixAt": null
+    },
+    {
+      "login": "brianacnguyen",
+      "name": "Brian August Nguyen",
+      "points": 0,
+      "inFlight": 6,
+      "fixes": [],
+      "lastFixAt": null
+    },
+    {
+      "login": "ciarakeane",
+      "name": "Ciara Keane",
+      "points": 0,
+      "inFlight": 0,
+      "fixes": [],
+      "lastFixAt": null
+    },
+    {
+      "login": "coreyjanssen",
+      "name": "Corey Janssen",
+      "points": 0,
+      "inFlight": 1,
+      "fixes": [],
+      "lastFixAt": null
+    },
+    {
+      "login": "georgewrmarshall",
+      "name": "George Marshall",
+      "points": 0,
+      "inFlight": 5,
+      "fixes": [],
+      "lastFixAt": null
+    },
+    {
+      "login": "georakusen",
+      "name": "Georgia Rakusen",
+      "points": 0,
+      "inFlight": 0,
+      "fixes": [],
+      "lastFixAt": null
+    },
+    {
+      "login": "hilvmason",
+      "name": "hilvmason",
+      "points": 0,
+      "inFlight": 0,
+      "fixes": [],
+      "lastFixAt": null
+    },
+    {
+      "login": "jasonculbertson",
+      "name": "jasonculbertson",
+      "points": 0,
+      "inFlight": 11,
+      "fixes": [],
+      "lastFixAt": null
+    },
+    {
+      "login": "jessup",
+      "name": "jessup",
+      "points": 0,
+      "inFlight": 0,
+      "fixes": [],
+      "lastFixAt": null
+    },
+    {
+      "login": "joshuaphiloctete",
+      "name": "joshuaphiloctete",
+      "points": 0,
+      "inFlight": 1,
+      "fixes": [],
+      "lastFixAt": null
+    },
+    {
+      "login": "rmkk1234",
+      "name": "Roy Kim",
+      "points": 0,
+      "inFlight": 4,
+      "fixes": [],
+      "lastFixAt": null
+    },
+    {
+      "login": "yanrong-chen",
+      "name": "Yanrong Chen",
+      "points": 0,
+      "inFlight": 2,
+      "fixes": [],
+      "lastFixAt": null
+    }
   ]
 }

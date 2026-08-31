@@ -29,11 +29,15 @@ jobs:
 
       - name: Rebuild standings
         env:
+          # GITHUB_TOKEN cannot read org team members. Set LEADERBOARD_TOKEN to a
+          # classic PAT (read:org) or fine-grained token (Members: Read) on the
+          # MetaMask org. Public PR scoring still works with that same token.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LEADERBOARD_TOKEN: ${{ secrets.LEADERBOARD_TOKEN }}
         run: node scripts/build-leaderboard.mjs
 
       - name: Print roster size
-        run: node -e 'const d=JSON.parse(require("fs").readFileSync("data.json","utf8")); console.log("Roster size:", d.totals.designers);'
+        run: node -e 'const d=JSON.parse(require("fs").readFileSync("data.json","utf8")); console.log("Roster size:", d.totals.designers, "team:", d.org + "/" + d.team);'
 
       - name: Package site
         run: |

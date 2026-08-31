@@ -2,13 +2,14 @@
 /**
  * Builds data.json for the PR Party leaderboard.
  *
- * Scoring rule: one point per merged pull request authored by someone on the
- * DESIGNERS list, merged inside the contest window, in any repo in `repos`.
- * Open PRs by those authors count as inFlight (shown, no points).
+ * Scoring rule: one point per merged pull request authored by a member of the
+ * MetaMask/design GitHub team, merged inside the contest window, in any repo in
+ * `repos`. Open PRs by those authors count as inFlight (shown, no points).
  *
- * Auth: the tracked repos are public, so the GITHUB_TOKEN that Actions provides
- * automatically is enough — no PAT, no org approval. Running locally needs any
- * token with public read (a classic token with no scopes works).
+ * Auth: needs a token that can read the closed MetaMask/design team (Members:Read
+ * / read:org). Prefer running from a MetaMask org repo so Actions GITHUB_TOKEN
+ * can be granted that access; otherwise set LEADERBOARD_TOKEN. Public repo PR
+ * reads still work with any public-read token once the roster is resolved.
  */
 
 import { writeFile } from "node:fs/promises";
@@ -18,28 +19,15 @@ const repos = [
   "MetaMask/metamask-extension",
   "MetaMask/metamask-mobile",
 ];
+const org = "MetaMask";
+const team = "design";
 const win = { start: "2026-09-01", end: "2026-09-30" };
 const prize = "$250";
-
-// Who's eligible. Handles only — display names come from GitHub profiles.
-// Add a starter here and they appear on the board on the next run.
-const DESIGNERS = [
-  "joshuaphiloctete",
-  "yanrong-chen",
-  "rmkk1234",
-  "jessup",
-  "alidotforrest",
-  "andrewchra",
-  "nikki-p-h-12",
-  "ragkandala",
-  "amamahfer",
-  "thatsjustthewayitis",
-];
 // ────────────────────────────────────────────────────────────────
 
-const TOKEN = process.env.GITHUB_TOKEN;
+const TOKEN = process.env.LEADERBOARD_TOKEN || process.env.GITHUB_TOKEN;
 if (!TOKEN) {
-  console.error("Missing GITHUB_TOKEN");
+  console.error("Missing GITHUB_TOKEN (or LEADERBOARD_TOKEN)");
   process.exit(1);
 }
 
@@ -73,6 +61,20 @@ const QUERY = `
   }
 `;
 
+const TEAM_MEMBERS_QUERY = `
+  query($org: String!, $slug: String!, $cursor: String) {
+    organization(login: $org) {
+      team(slug: $slug) {
+        name
+        members(first: 100, after: $cursor) {
+          pageInfo { hasNextPage endCursor }
+          nodes { login }
+        }
+      }
+    }
+  }
+`;
+
 async function gql(query, variables = {}) {
   const res = await fetch("https://api.github.com/graphql", {
     method: "POST",
@@ -94,7 +96,58 @@ async function gql(query, variables = {}) {
   return body.data;
 }
 
-// Display names only. Public user data, so the built-in token can read it.
+/** Roster comes from @MetaMask/design. Fail loud — a silent empty board is worse. */
+async function fetchTeamLogins() {
+  const logins = [];
+  let cursor = null;
+  let teamName = team;
+
+  do {
+    let data;
+    try {
+      data = await gql(TEAM_MEMBERS_QUERY, { org, slug: team, cursor });
+    } catch (err) {
+      throw new Error(
+        `Could not read @${org}/${team} members: ${err.message}. ` +
+          `Need Members:Read (or read:org) on the token, and this repo should live under ${org}.`,
+      );
+    }
+
+    const t = data.organization?.team;
+    if (!t) {
+      throw new Error(
+        `Team @${org}/${team} not found or not visible to this token. ` +
+          `Confirm the slug and that the token can read closed org teams.`,
+      );
+    }
+
+    teamName = t.name || teamName;
+    for (const node of t.members.nodes) {
+      if (node?.login) logins.push(node.login);
+    }
+    cursor = t.members.pageInfo.hasNextPage ? t.members.pageInfo.endCursor : null;
+  } while (cursor);
+
+  if (!logins.length) {
+    throw new Error(
+      `Team @${org}/${team} returned zero members. Refusing to publish an empty roster.`,
+    );
+  }
+
+  // Preserve GitHub casing; dedupe case-insensitively.
+  const seen = new Map();
+  for (const login of logins) {
+    const key = login.toLowerCase();
+    if (!seen.has(key)) seen.set(key, login);
+  }
+  const unique = [...seen.values()].sort((a, b) =>
+    a.localeCompare(b, undefined, { sensitivity: "base" }),
+  );
+  console.log(`Roster: ${unique.length} members from @${org}/${team} (${teamName}).`);
+  return unique;
+}
+
+// Display names only. Public user data, so a public-read token can fetch it.
 async function fetchNames(logins) {
   if (!logins.length) return {};
   const fields = logins
@@ -127,6 +180,7 @@ async function searchPulls(parts) {
   return found;
 }
 
+const DESIGNERS = await fetchTeamLogins();
 const names = await fetchNames(DESIGNERS);
 
 // Score into a row per designer. Everyone on the roster is published, including
@@ -185,6 +239,8 @@ const standings = [...board.values()]
 
 const out = {
   updatedAt: new Date().toISOString(),
+  org,
+  team,
   repos,
   window: win,
   prize,

@@ -1,17 +1,16 @@
 # PR Party leaderboard
 
-Static leaderboard for a September 2026 design contest at
-MetaMask. Designers on the `DESIGNERS` list (in `scripts/build-leaderboard.mjs`)
-score one point per merged PR they author in `metamask-extension` or
-`metamask-mobile`. Most merges by month end wins $250. A GitHub Action rebuilds
-standings on a cron and publishes to Pages.
+Static leaderboard for a September 2026 design contest at MetaMask. Roster is
+the GitHub team `@MetaMask/design`. One point per merged PR a member authors in
+`metamask-extension` or `metamask-mobile`. Most merges by month end wins $250.
+A GitHub Action rebuilds standings on a cron and publishes to Pages.
 
 ## Layout
 
 - `index.html` — the whole site. Vanilla HTML/CSS/JS, no build, no framework.
   Fetches `data.json` at runtime.
 - `scripts/build-leaderboard.mjs` — queries the GitHub GraphQL API and writes
-  `data.json`. Config block at the top (repos, window, prize, DESIGNERS).
+  `data.json`. Config block at the top (org, team, repos, window, prize).
 - `data.json` — generated. Committed so the page renders before the first
   Action run. Shape: `totals.{fixes,designers,inFlight}` and a `standings[]`
   of `{login,name,points,inFlight,fixes[],lastFixAt}`.
@@ -21,10 +20,10 @@ standings on a cron and publishes to Pages.
 
 These exist because each one closes a specific hole. Preserve them.
 
-1. **Points are counted per merged PR.** One point per PR the designer authored
-   that merged inside the window.
-2. **Eligibility is the `DESIGNERS` list** in the config block. This is the only
-   thing keeping engineers off the board. The PR author must be on the list.
+1. **Points are counted per merged PR.** One point per PR a roster member
+   authored that merged inside the window.
+2. **Eligibility is `@MetaMask/design`.** The PR author must be on that GitHub
+   team at build time. Do not reintroduce a hardcoded handle list.
 3. **No issue labels.** Labelled issues are not part of scoring. Only the PR
    author, repo, and merge date matter.
 4. **The PR must be merged inside the window.** A designer's open PR counts as
@@ -34,17 +33,20 @@ These exist because each one closes a specific hole. Preserve them.
 
 ## Deliberate design decisions
 
-- **No PAT.** The tracked repos are public, so the `GITHUB_TOKEN` Actions
-  provides automatically can read their PRs. Don't reintroduce a PAT or a
-  `read:org` scope — an earlier version pulled the roster from a GitHub team
-  and needed both, which meant waiting on org approval for no real gain.
+- **Org-hosted repo.** Lives under `MetaMask/` so Pages and secrets sit with
+  the org. The built-in Actions `GITHUB_TOKEN` still cannot read closed team
+  members — that needs `LEADERBOARD_TOKEN` (classic `read:org`, or fine-grained
+  Members: Read). Prefer an org/repo secret over a personal-account PAT when
+  possible.
+- **Fail loud on roster fetch.** A 403 or empty team must fail the build. Never
+  publish an empty board from a silent auth miss.
 - **Blank GitHub profiles show as handles.** That's how those people already
   appear in the repo, so it doesn't read as a bug.
-- **Publish the whole roster.** Everyone on `DESIGNERS` appears from day one,
-  including zeros. While nobody has scored, the board sorts alphabetically and
-  shows a dot instead of a rank so it doesn't imply a winner.
 - **A failed name lookup degrades to handles** and the build still succeeds.
   Names are cosmetic; never let them block scoring.
+- **Publish the whole roster.** Everyone on `@MetaMask/design` appears from day
+  one, including zeros. While nobody has scored, the board sorts alphabetically
+  and shows a dot instead of a rank so it doesn't imply a winner.
 - **Artifacts use no browser storage.** State lives in memory only.
 
 ## Visual language
@@ -58,9 +60,8 @@ row inverts to near-black. Everything else stays quiet.
 ## Working on this
 
 ```sh
-# Rebuild standings. Any token with public read works — a classic PAT with no
-# scopes ticked is enough, since the target repos are public.
-GITHUB_TOKEN=ghp_xxx node scripts/build-leaderboard.mjs
+# Rebuild standings. Needs a token that can read @MetaMask/design members.
+LEADERBOARD_TOKEN=ghp_xxx node scripts/build-leaderboard.mjs
 
 # Preview — must be over http, not file://, or the data.json fetch fails
 python3 -m http.server 8000
@@ -70,7 +71,7 @@ To test scoring without hitting GitHub, stub `globalThis.fetch` and import the
 script with a cache-busting nonce prepended (strip the shebang first, or the
 nonce pushes `#!` off line one and Node rejects the module). Cases worth keeping
 green: empty board, unmerged PR, PR merged after the window, PR in an
-untracked repo, and a failed name lookup.
+untracked repo, team fetch 403, and a failed name lookup.
 
 ## Out of scope unless asked
 
