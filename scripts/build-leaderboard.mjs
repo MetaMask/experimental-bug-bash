@@ -5,20 +5,24 @@
  * Scoring rule: one point per issue carrying ALL the required labels that gets
  * closed by a merged PR authored by someone on the DESIGNERS list, merged inside
  * the contest window. The issue itself can be any age — fixing old bugs counts.
+ * Issues from every repo in `repos` count the same.
  *
  * Points are counted per ISSUE, so splitting one fix across several PRs still
  * scores once. The DESIGNERS list is the only thing keeping engineers off the
  * board, so keep it current.
  *
- * Auth: `metamask-mobile` is a public repo, so the GITHUB_TOKEN that Actions
- * provides automatically is enough — no PAT, no org approval. Running locally
- * needs any token with public read (a classic token with no scopes works).
+ * Auth: both target repos are public, so the GITHUB_TOKEN that Actions provides
+ * automatically is enough — no PAT, no org approval. Running locally needs any
+ * token with public read (a classic token with no scopes works).
  */
 
 import { writeFile } from "node:fs/promises";
 
 // ── Contest config ──────────────────────────────────────────────
-const repo = "MetaMask/metamask-mobile";
+const repos = [
+  "MetaMask/metamask-mobile",
+  "MetaMask/metamask-extension",
+];
 // An issue must carry ALL of these to count.
 const labels = ["design-papercut"];
 const win = { start: "2026-09-01", end: "2026-09-30" };
@@ -68,6 +72,7 @@ const QUERY = `
           state
           createdAt
           author { login }
+          repository { nameWithOwner }
           closedByPullRequestsReferences(first: 10, includeClosedPrs: true) {
             nodes {
               number
@@ -125,17 +130,25 @@ async function fetchNames(logins) {
   }
 }
 
-// Every labeled issue in the repo, any age. Old bugs are fair game.
+async function fetchLabeledIssues(repo) {
+  const found = [];
+  let cursor = null;
+  do {
+    const data = await gql(QUERY, {
+      q: [`repo:${repo}`, "is:issue", ...labels.map((l) => `label:"${l}"`)].join(" "),
+      cursor,
+    });
+    found.push(...data.search.nodes.filter(Boolean));
+    cursor = data.search.pageInfo.hasNextPage ? data.search.pageInfo.endCursor : null;
+  } while (cursor);
+  return found;
+}
+
+// Every labeled issue across every tracked repo, any age. Old bugs are fair game.
 const issues = [];
-let cursor = null;
-do {
-  const data = await gql(QUERY, {
-    q: [`repo:${repo}`, "is:issue", ...labels.map((l) => `label:"${l}"`)].join(" "),
-    cursor,
-  });
-  issues.push(...data.search.nodes.filter(Boolean));
-  cursor = data.search.pageInfo.hasNextPage ? data.search.pageInfo.endCursor : null;
-} while (cursor);
+for (const repo of repos) {
+  issues.push(...(await fetchLabeledIssues(repo)));
+}
 
 const designers = new Set(DESIGNERS.map((l) => l.toLowerCase()));
 const names = await fetchNames(DESIGNERS);
@@ -153,6 +166,7 @@ let fixedByOthers = 0; // labeled issues closed in-window by non-designers
 
 for (const issue of issues) {
   const prs = issue.closedByPullRequestsReferences?.nodes ?? [];
+  const repo = issue.repository?.nameWithOwner;
 
   // Earliest PR merged inside the window that closes this issue. The issue's
   // own age is irrelevant — fixing an old bug counts.
@@ -181,6 +195,7 @@ for (const issue of issues) {
   const scorer = board.get(login);
   scorer.points += 1;
   scorer.fixes.push({
+    repo,
     issue: issue.number,
     title: issue.title,
     url: issue.url,
@@ -213,7 +228,7 @@ const standings = [...board.values()]
 
 const out = {
   updatedAt: new Date().toISOString(),
-  repo,
+  repos,
   labels,
   window: win,
   prize,
@@ -230,5 +245,6 @@ await writeFile(new URL("../data.json", import.meta.url), JSON.stringify(out, nu
 
 console.log(
   `${out.totals.fixes} fixes by ${standings.filter((r) => r.points).length} of ` +
-    `${DESIGNERS.length} designers, ${out.totals.inFlight} in flight. Wrote data.json.`,
+    `${DESIGNERS.length} designers, ${out.totals.inFlight} in flight across ` +
+    `${repos.length} repos. Wrote data.json.`,
 );

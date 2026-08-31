@@ -403,7 +403,7 @@
   <section class="rules">
     <div class="rule">
       <h3>How to enter</h3>
-      <p>Pick any open issue labelled <code>design-papercut</code> — new or old. Fix it, and put <code>Fixes #123</code> or <code>Closes #123</code> in your PR.</p>
+      <p>Pick any open issue labelled <code>design-papercut</code> in <code>metamask-mobile</code> or <code>metamask-extension</code> — new or old. Fix it, and put <code>Fixes #123</code> or <code>Closes #123</code> in your PR.</p>
     </div>
     <div class="rule">
       <h3>How points work</h3>
@@ -427,6 +427,7 @@
     window: { start: "2026-09-01", end: "2026-09-30" },
     prize: "$250",
     labels: ["design-papercut"],
+    repos: ["MetaMask/metamask-mobile", "MetaMask/metamask-extension"],
     totals: { fixes: 0, designers: 0, inFlight: 0, fixedByOthers: 0 },
     standings: []
   };
@@ -475,27 +476,38 @@
       : active;
 
     const labels = d.labels || ["design-papercut"];
-    const repoPath = d.repo || "MetaMask/metamask-mobile";
+    const repoList =
+      d.repos ||
+      (d.repo ? [d.repo] : ["MetaMask/metamask-mobile", "MetaMask/metamask-extension"]);
 
-    // Designers no longer necessarily file what they fix, so audit by PR author.
+    // Designers no longer necessarily file what they fix, so audit by PR author
+    // across every tracked repo (GitHub ORs multiple repo: terms).
     const auditUrl = (login) =>
-      "https://github.com/" +
-      repoPath +
-      "/pulls?q=" +
+      "https://github.com/search?type=issues&q=" +
       encodeURIComponent(
-        ["is:pr", "is:merged", `author:${login}`,
-         `merged:${d.window.start}..${d.window.end}`, "sort:updated-desc"].join(" ")
+        [
+          "is:pr",
+          "is:merged",
+          `author:${login}`,
+          ...repoList.map((r) => `repo:${r}`),
+          `merged:${d.window.start}..${d.window.end}`,
+          "sort:updated-desc",
+        ].join(" ")
       );
 
     // Day one is an empty board by design — zeros aren't listed. Make it an
     // invitation with the labels pre-applied rather than a dead row.
     if (!listed.length) {
       const backlogUrl =
-        "https://github.com/" +
-        repoPath +
-        "/issues?q=" +
+        "https://github.com/search?type=issues&q=" +
         encodeURIComponent(
-          ["is:issue", "is:open", ...labels.map((l) => `label:${l}`), "sort:created-desc"].join(" ")
+          [
+            "is:issue",
+            "is:open",
+            ...repoList.map((r) => `repo:${r}`),
+            ...labels.map((l) => `label:${l}`),
+            "sort:created-desc",
+          ].join(" ")
         );
 
       document.querySelector(".board-head .eyebrow").textContent = "Nobody yet";

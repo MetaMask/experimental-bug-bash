@@ -7,9 +7,10 @@ Five files. No token, no dependencies.
 
 ## The rule
 
-One point per issue labelled `design-papercut` that you close with a merged PR
-you authored, merged by 30 September. The issue can be any age — fixing old
-backlog bugs counts the same as fixing something you just found.
+One point per issue labelled `design-papercut` in `metamask-mobile` or
+`metamask-extension` that you close with a merged PR you authored, merged by
+30 September. The issue can be any age — fixing old backlog bugs counts the
+same as fixing something you just found.
 
 - **Counted per issue.** Splitting one fix across several PRs still scores once.
 - **Eligibility is the `DESIGNERS` list** at the top of the build script. Who
@@ -20,9 +21,9 @@ backlog bugs counts the same as fixing something you just found.
 
 ## No token to request
 
-`metamask-mobile` is a public repo, so the `GITHUB_TOKEN` that Actions provides
-automatically can read its issues and pull requests. There's no PAT to create
-and no org approval to wait on.
+Both `metamask-mobile` and `metamask-extension` are public, so the
+`GITHUB_TOKEN` that Actions provides automatically can read their issues and
+pull requests. There's no PAT to create and no org approval to wait on.
 
 Eligibility is a list of ~15 handles in the config block. Display names come
 from GitHub profiles at build time; a blank profile shows as the handle, which
@@ -37,14 +38,15 @@ the `design-papercut` label, since the backlog is where entries come from.
 ## Setup (about 15 minutes)
 
 1. **Create this repo.**
-2. **Confirm the label.** `design-papercut` must exist in `metamask-mobile`
+2. **Confirm the label.** `design-papercut` must exist in both tracked repos
    with that exact spelling — a mismatch returns an empty board, not an error.
 3. **Enable Pages**: Settings → Pages → Source → GitHub Actions.
 4. **Run it once by hand** — Actions → Bug Bash leaderboard → Run workflow.
 
-To change the repo, labels, dates, or prize, edit the config block at the top of
+To change the repos, labels, dates, or prize, edit the config block at the top of
 `scripts/build-leaderboard.mjs`. `labels` is an array and every entry must be
-present on an issue for it to count.
+present on an issue for it to count. `repos` is an array; issues from every
+entry score the same.
 
 ## Running it locally
 
@@ -72,8 +74,9 @@ bugs fixed — but say it plainly rather than letting someone discover it.
 expect people to work the existing backlog rather than hunt. If you want hunting,
 that needs a separate incentive.
 
-**Decide whether MMDS repo fixes count.** The script reads one repo. If design
-system work is in scope, that's a small change to accept an array.
+**Decide whether more repos count.** The script already reads mobile and
+extension. If design-system work (e.g. MMDS) is in scope, add it to the `repos`
+array.
 
 ## Things worth knowing
 

@@ -2,16 +2,16 @@
 
 Static leaderboard for a September 2026 design bug-squashing contest at
 MetaMask. Designers on the `DESIGNERS` list (in `scripts/build-leaderboard.mjs`)
-fix `design-papercut` labeled issues in `MetaMask/metamask-mobile` — any
-age, backlog counts. Most fixes by month end wins $250. A GitHub Action rebuilds
-standings on a cron and publishes to Pages.
+fix `design-papercut` labeled issues in `metamask-mobile` and
+`metamask-extension` — any age, backlog counts. Most fixes by month end wins
+$250. A GitHub Action rebuilds standings on a cron and publishes to Pages.
 
 ## Layout
 
 - `index.html` — the whole site. Vanilla HTML/CSS/JS, no build, no framework.
   Fetches `data.json` at runtime.
 - `scripts/build-leaderboard.mjs` — queries the GitHub GraphQL API and writes
-  `data.json`. Config block at the top (repo, labels, window, prize).
+  `data.json`. Config block at the top (repos, labels, window, prize).
 - `data.json` — generated. Committed so the page renders before the first
   Action run. Shape: `totals.{fixes,designers,inFlight,fixedByOthers}` and a
   `standings[]` of `{login,name,points,inFlight,fixes[],lastFixAt}`.
@@ -35,10 +35,10 @@ These exist because each one closes a specific hole. Preserve them.
 
 ## Deliberate design decisions
 
-- **No PAT.** `metamask-mobile` is public, so the `GITHUB_TOKEN` Actions provides
-  automatically can read its issues and PRs. Don't reintroduce a PAT or a
-  `read:org` scope — an earlier version pulled the roster from a GitHub team and
-  needed both, which meant waiting on org approval for no real gain.
+- **No PAT.** Both tracked repos are public, so the `GITHUB_TOKEN` Actions
+  provides automatically can read their issues and PRs. Don't reintroduce a PAT
+  or a `read:org` scope — an earlier version pulled the roster from a GitHub
+  team and needed both, which meant waiting on org approval for no real gain.
 - **Blank GitHub profiles show as handles.** That's how those people already
   appear in the repo, so it doesn't read as a bug.
 - **A failed name lookup degrades to handles** and the build still succeeds.
@@ -66,7 +66,7 @@ row inverts to near-black. Everything else stays quiet.
 
 ```sh
 # Rebuild standings. Any token with public read works — a classic PAT with no
-# scopes ticked is enough, since the target repo is public.
+# scopes ticked is enough, since the target repos are public.
 GITHUB_TOKEN=ghp_xxx node scripts/build-leaderboard.mjs
 
 # Preview — must be over http, not file://, or the data.json fetch fails
@@ -82,6 +82,5 @@ lookup.
 
 ## Out of scope unless asked
 
-Reading more than one repo (MMDS is not currently included), weighted scoring
-tiers, and awarding points for *finding* a bug someone else fixes. All three
-were considered and cut for simplicity.
+Weighted scoring tiers, and awarding points for *finding* a bug someone else
+fixes. Both were considered and cut for simplicity.
