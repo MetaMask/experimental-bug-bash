@@ -44,21 +44,3 @@ To change the team, repos, dates, or prize, edit the config block at the top of
 LEADERBOARD_TOKEN=ghp_xxx node scripts/build-leaderboard.mjs
 python3 -m http.server 8000   # then open localhost:8000
 ```
-
-## Before the 1st
-
-**Confirm `@MetaMask/design` membership.** Anyone missing from that team is a
-silent zero (they never appear). The workflow log prints roster size every run.
-
-**The board measures September merges.** Any PR a design-team member merges into
-extension or mobile in September counts, whether they were playing or not.
-
-## Things worth knowing
-
-**Watch the merge queue in week four.** Give eng leads a heads-up to prioritize
-designer PRs in extension and mobile, or you measure review latency instead of
-output.
-
-**The first-PR cliff is the real risk.** Pods, Android SDK, env vars, yarn. A
-30-minute setup call on the 1st moves participation more than anything on this
-page.
