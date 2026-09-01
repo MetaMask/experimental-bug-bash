@@ -3,7 +3,7 @@
 Static leaderboard for the September MetaMask Design PR Party. A GitHub Action
 rebuilds standings on a cron and publishes to Pages.
 
-Lives at `MetaMask/design-bug-bash`. No dependencies.
+Lives at `MetaMask/experimental-bug-bash`. No dependencies.
 
 ## The rule
 
