@@ -21,6 +21,18 @@ const repos = [
 ];
 const org = "MetaMask";
 const team = "design";
+// Handles on the team who are not in the contest (managers, etc.). Case-insensitive.
+const exclude = [
+  "amandaye0h",
+  "andrewjcohen",
+  "brianacnguyen",
+  "ciarakeane",
+  "coreyjanssen",
+  "georakusen",
+  "georgewrmarshall",
+  "hilvmason",
+  "jasonculbertson",
+];
 const win = { start: "2026-09-01", end: "2026-09-30" };
 const prize = "$250";
 // ────────────────────────────────────────────────────────────────
@@ -143,8 +155,20 @@ async function fetchTeamLogins() {
   const unique = [...seen.values()].sort((a, b) =>
     a.localeCompare(b, undefined, { sensitivity: "base" }),
   );
-  console.log(`Roster: ${unique.length} members from @${org}/${team} (${teamName}).`);
-  return unique;
+  const skip = new Set(exclude.map((l) => l.toLowerCase()));
+  const filtered = unique.filter((l) => !skip.has(l.toLowerCase()));
+  const dropped = unique.length - filtered.length;
+  console.log(
+    `Roster: ${filtered.length} members from @${org}/${team} (${teamName})` +
+      (dropped ? `, excluded ${dropped}` : "") +
+      ".",
+  );
+  if (!filtered.length) {
+    throw new Error(
+      `After excludes, @${org}/${team} roster is empty. Check the exclude list.`,
+    );
+  }
+  return filtered;
 }
 
 // Display names only. Public user data, so a public-read token can fetch it.
