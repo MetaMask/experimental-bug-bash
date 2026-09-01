@@ -30,6 +30,7 @@ const exclude = [
   "coreyjanssen",
   "georakusen",
   "georgewrmarshall",
+  "gettelmm",
   "hilvmason",
   "jasonculbertson",
 ];
