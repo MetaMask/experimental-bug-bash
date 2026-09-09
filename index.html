@@ -403,7 +403,7 @@
   <section class="rules">
     <div class="rule">
       <h3>How to score</h3>
-      <p>Merge a pull request into <code>metamask-extension</code>, <code>metamask-mobile</code>, <code>metamask-design-system</code>, or a <code>va-mmcx-*</code> repo in <code>consensys-vertical-apps</code> for a point.</p>
+      <p>Merge a pull request into <code>metamask-extension</code> or <code>metamask-mobile</code> for a point.</p>
     </div>
     <div class="rule">
       <h3>Who counts</h3>
@@ -427,9 +427,7 @@
     repos: [
       "MetaMask/metamask-extension",
       "MetaMask/metamask-mobile",
-      "MetaMask/metamask-design-system",
     ],
-    repoPrefixes: [{ org: "consensys-vertical-apps", prefix: "va-mmcx-" }],
     totals: { fixes: 0, designers: 15, inFlight: 0 },
     standings: [
       { login: "alidotforrest", name: "alidotforrest", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
@@ -495,18 +493,9 @@
     const repoList = d.repos || [
       "MetaMask/metamask-extension",
       "MetaMask/metamask-mobile",
-      "MetaMask/metamask-design-system",
     ];
-    const prefixes = d.repoPrefixes || [
-      { org: "consensys-vertical-apps", prefix: "va-mmcx-" },
-    ];
-    const scopes = [
-      ...repoList.map((r) => `repo:${r}`),
-      ...[...new Set(prefixes.map((p) => p.org))].map((o) => `org:${o}`),
-    ];
-    // Mixed `repo:` and `org:` AND together, so OR the scopes in one group.
-    const scopeClause = scopes.length > 1 ? `(${scopes.join(" OR ")})` : scopes[0];
 
+    // Audit by PR author across every tracked repo (GitHub ORs multiple repo: terms).
     const auditUrl = (login) =>
       "https://github.com/search?type=issues&q=" +
       encodeURIComponent(
@@ -514,7 +503,7 @@
           "is:pr",
           "is:merged",
           `author:${login}`,
-          scopeClause,
+          ...repoList.map((r) => `repo:${r}`),
           `merged:${d.window.start}..${d.window.end}`,
           "sort:updated-desc",
         ].join(" ")

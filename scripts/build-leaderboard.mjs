@@ -4,14 +4,12 @@
  *
  * Scoring rule: one point per merged pull request authored by a member of the
  * MetaMask/design GitHub team, merged inside the contest window, in any repo in
- * `repos` or matching `repoPrefixes`. Open PRs by those authors count as
- * inFlight (shown, no points).
+ * `repos`. Open PRs by those authors count as inFlight (shown, no points).
  *
  * Auth: needs a token that can read the closed MetaMask/design team (Members:Read
  * / read:org). Prefer running from a MetaMask org repo so Actions GITHUB_TOKEN
  * can be granted that access; otherwise set LEADERBOARD_TOKEN. Public repo PR
  * reads still work with any public-read token once the roster is resolved.
- * Private prefix-matched PRs only count if that token can see those repos.
  */
 
 import { writeFile } from "node:fs/promises";
@@ -20,12 +18,7 @@ import { writeFile } from "node:fs/promises";
 const repos = [
   "MetaMask/metamask-extension",
   "MetaMask/metamask-mobile",
-  "MetaMask/metamask-design-system",
 ];
-// Prefixes are searched per org (GitHub ANDs mixed `repo:` and `org:`), then
-// filtered to repo names that start with `prefix`. New matching repos count
-// without updating this list.
-const repoPrefixes = [{ org: "consensys-vertical-apps", prefix: "va-mmcx-" }];
 const org = "MetaMask";
 const team = "design";
 // Handles on the team who are not in the contest (managers, etc.). Case-insensitive.
@@ -200,53 +193,15 @@ async function fetchNames(logins) {
   }
 }
 
-const repoSet = new Set(repos.map((r) => r.toLowerCase()));
-
-function inScope(pr) {
-  const full = pr.repository?.nameWithOwner;
-  if (!full) return false;
-  if (repoSet.has(full.toLowerCase())) return true;
-  const slash = full.indexOf("/");
-  if (slash < 0) return false;
-  const owner = full.slice(0, slash);
-  const name = full.slice(slash + 1);
-  return repoPrefixes.some(
-    (p) =>
-      owner.toLowerCase() === p.org.toLowerCase() &&
-      name.toLowerCase().startsWith(p.prefix.toLowerCase()),
-  );
-}
-
-function searchQueries(parts) {
-  const qs = [];
-  if (repos.length) qs.push([...parts, ...repos.map((r) => `repo:${r}`)].join(" "));
-  const seenOrgs = new Set();
-  for (const p of repoPrefixes) {
-    const key = p.org.toLowerCase();
-    if (seenOrgs.has(key)) continue;
-    seenOrgs.add(key);
-    qs.push([...parts, `org:${p.org}`].join(" "));
-  }
-  return qs;
-}
-
 async function searchPulls(parts) {
   const found = [];
-  const seen = new Set();
-  for (const q of searchQueries(parts)) {
-    let cursor = null;
-    do {
-      const data = await gql(QUERY, { q, cursor });
-      for (const pr of data.search.nodes.filter(Boolean)) {
-        if (!inScope(pr)) continue;
-        const id = pr.url || `${pr.repository?.nameWithOwner}#${pr.number}`;
-        if (seen.has(id)) continue;
-        seen.add(id);
-        found.push(pr);
-      }
-      cursor = data.search.pageInfo.hasNextPage ? data.search.pageInfo.endCursor : null;
-    } while (cursor);
-  }
+  let cursor = null;
+  const q = [...parts, ...repos.map((r) => `repo:${r}`)].join(" ");
+  do {
+    const data = await gql(QUERY, { q, cursor });
+    found.push(...data.search.nodes.filter(Boolean));
+    cursor = data.search.pageInfo.hasNextPage ? data.search.pageInfo.endCursor : null;
+  } while (cursor);
   return found;
 }
 
@@ -312,7 +267,6 @@ const out = {
   org,
   team,
   repos,
-  repoPrefixes,
   window: win,
   prize,
   totals: {
@@ -328,7 +282,5 @@ await writeFile(new URL("../data.json", import.meta.url), JSON.stringify(out, nu
 console.log(
   `${out.totals.fixes} PRs by ${standings.filter((r) => r.points).length} of ` +
     `${DESIGNERS.length} designers, ${out.totals.inFlight} in flight across ` +
-    `${repos.length} repos` +
-    (repoPrefixes.length ? ` + ${repoPrefixes.length} prefixes` : "") +
-    `. Wrote data.json.`,
+    `${repos.length} repos. Wrote data.json.`,
 );

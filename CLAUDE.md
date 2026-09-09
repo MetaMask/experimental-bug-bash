@@ -2,9 +2,7 @@
 
 Static leaderboard for a September 2026 design contest at MetaMask. Roster is
 the GitHub team `@MetaMask/design`. One point per merged PR a member authors in
-`metamask-extension`, `metamask-mobile`, `metamask-design-system`, or a
-`va-mmcx-*` repo in `consensys-vertical-apps`.
-Most merges by month end wins $250.
+`metamask-extension` or `metamask-mobile`. Most merges by month end wins $250.
 A GitHub Action rebuilds standings on a cron and publishes to Pages.
 
 ## Layout
@@ -12,7 +10,7 @@ A GitHub Action rebuilds standings on a cron and publishes to Pages.
 - `index.html` — the whole site. Vanilla HTML/CSS/JS, no build, no framework.
   Fetches `data.json` at runtime.
 - `scripts/build-leaderboard.mjs` — queries the GitHub GraphQL API and writes
- `data.json`. Config block at the top (org, team, repos, repoPrefixes, window, prize).
+  `data.json`. Config block at the top (org, team, repos, window, prize).
 - `data.json` — generated. Committed so the page renders before the first
   Action run. Shape: `totals.{fixes,designers,inFlight}` and a `standings[]`
   of `{login,name,points,inFlight,fixes[],lastFixAt}`.
@@ -31,8 +29,7 @@ These exist because each one closes a specific hole. Preserve them.
    author, repo, and merge date matter.
 4. **The PR must be merged inside the window.** A designer's open PR counts as
    `inFlight` — shown, but worth no points. Closed-without-merge scores nothing.
-5. **Only listed `repos` and `repoPrefixes` count.** Work outside those does
-   not score. Prefixes match repo name (not owner), case-insensitive.
+5. **Only repos in `repos` count.** Work in other MetaMask repos does not score.
 6. **Ties break to whoever got there first** — earlier last-merge ranks higher.
 
 ## Deliberate design decisions
