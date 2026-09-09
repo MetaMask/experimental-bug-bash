@@ -7,7 +7,9 @@ Lives at `MetaMask/experimental-bug-bash`. No dependencies.
 
 ## The rule
 
-Merge a pull request into `metamask-extension` or `metamask-mobile` for a point.
+Merge a pull request into `metamask-extension`, `metamask-mobile`,
+`metamask-design-system`, or a `va-mmcx-*` repo in `consensys-vertical-apps`
+for a point.
 You must be on the GitHub team `@MetaMask/design`. Merges must land by 30
 September.
 
@@ -26,7 +28,8 @@ on MetaMask, and store it as the repo (or org) secret `LEADERBOARD_TOKEN`.
 Without that secret the build fails on purpose — better a red Action than an
 empty board.
 
-Public PR search for scoring works with the same token.
+Public PR search for scoring works with the same token. Private `va-mmcx-*`
+PRs in `consensys-vertical-apps` only count if that token can read those repos.
 
 ## Setup
 
