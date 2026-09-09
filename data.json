@@ -4,14 +4,7 @@
   "team": "design",
   "repos": [
     "MetaMask/metamask-extension",
-    "MetaMask/metamask-mobile",
-    "MetaMask/metamask-design-system"
-  ],
-  "repoPrefixes": [
-    {
-      "org": "consensys-vertical-apps",
-      "prefix": "va-mmcx-"
-    }
+    "MetaMask/metamask-mobile"
   ],
   "window": {
     "start": "2026-09-01",
