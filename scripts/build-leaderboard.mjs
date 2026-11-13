@@ -21,9 +21,11 @@ const repos = [
 ];
 const org = "MetaMask";
 const team = "design";
-// Handles on the team who are not in the contest. Case-insensitive.
-// Empty — everyone on @MetaMask/design shows up.
-const exclude = [];
+// Handles on the team who are not on the board. Case-insensitive.
+const exclude = [
+  "ciarakeane",
+  "hilvmason",
+];
 // Rolling window: the previous 30 days, recomputed every build. `start` is
 // 29 days before `end` so the span covers 30 calendar days inclusive.
 const DAY = 24 * 60 * 60 * 1000;
