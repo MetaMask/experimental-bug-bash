@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>PR Party — September 2026</title>
+<title>PR Party — MetaMask Design</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;900&family=Inter+Tight:wght@400;500&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -374,7 +374,7 @@
   <div class="wrap">
     <div class="hero-top">
       <span class="eyebrow">MetaMask Design · PR Party</span>
-      <span class="eyebrow" id="window-label">1–30 September 2026</span>
+      <span class="eyebrow" id="window-label">Previous 30 days</span>
     </div>
     <h1>Squash<br />season</h1>
     <div class="hero-stats">
@@ -410,37 +410,34 @@
       <p>You have to author the PR yourself. Open PRs show as in flight but score nothing until they land.</p>
     </div>
     <div class="rule">
-      <h3>Closing time</h3>
-      <p>PRs must merge by 30 September. Get review requests in early — nothing counts until it's on main.</p>
+      <h3>Rolling window</h3>
+      <p>Only merges from the previous 30 days count, and the window moves every day. Get review requests in early — nothing counts until it's on main.</p>
     </div>
   </section>
 </main>
 
 <script>
   // Falls back to this shape if data.json hasn't been generated yet.
+  const today = new Date();
+  const monthAgo = new Date(today.getTime() - 29 * 24 * 60 * 60 * 1000);
+  const seedWindow = {
+    start: monthAgo.toISOString().slice(0, 10),
+    end: today.toISOString().slice(0, 10),
+  };
   const SEED = {
-    updatedAt: new Date().toISOString(),
+    updatedAt: today.toISOString(),
     org: "MetaMask",
     team: "design",
-    window: { start: "2026-09-01", end: "2026-09-30" },
+    window: seedWindow,
     prize: "$250",
     repos: [
       "MetaMask/metamask-extension",
       "MetaMask/metamask-mobile",
     ],
-    totals: { fixes: 0, designers: 15, inFlight: 0 },
+    totals: { fixes: 0, designers: 7, inFlight: 0 },
     standings: [
       { login: "alidotforrest", name: "alidotforrest", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
-      { login: "amandaye0h", name: "amandaye0h", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
       { login: "andrewchra", name: "andrewchra", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
-      { login: "andrewjcohen", name: "andrewjcohen", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
-      { login: "brianacnguyen", name: "brianacnguyen", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
-      { login: "ciarakeane", name: "ciarakeane", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
-      { login: "coreyjanssen", name: "coreyjanssen", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
-      { login: "georakusen", name: "georakusen", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
-      { login: "georgewrmarshall", name: "georgewrmarshall", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
-      { login: "hilvmason", name: "hilvmason", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
-      { login: "jasonculbertson", name: "jasonculbertson", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
       { login: "jessup", name: "jessup", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
       { login: "joshuaphiloctete", name: "joshuaphiloctete", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
       { login: "rmkk1234", name: "rmkk1234", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
@@ -451,8 +448,14 @@
   const fmtRange = (w) => {
     const s = new Date(w.start + "T12:00:00Z");
     const e = new Date(w.end + "T12:00:00Z");
-    const month = e.toLocaleDateString("en-US", { month: "long", timeZone: "UTC" });
-    return `${s.getUTCDate()}–${e.getUTCDate()} ${month} ${e.getUTCFullYear()}`;
+    const opts = { month: "long", timeZone: "UTC" };
+    const sMonth = s.toLocaleDateString("en-US", opts);
+    const eMonth = e.toLocaleDateString("en-US", opts);
+    if (sMonth === eMonth && s.getUTCFullYear() === e.getUTCFullYear()) {
+      return `${s.getUTCDate()}–${e.getUTCDate()} ${eMonth} ${e.getUTCFullYear()}`;
+    }
+    const sYear = s.getUTCFullYear() === e.getUTCFullYear() ? "" : ` ${s.getUTCFullYear()}`;
+    return `${sMonth} ${s.getUTCDate()}${sYear} – ${eMonth} ${e.getUTCDate()} ${e.getUTCFullYear()}`;
   };
 
   const fmtStamp = (iso) =>

@@ -1,9 +1,10 @@
 # PR Party leaderboard
 
-Static leaderboard for a September 2026 design contest at MetaMask. Roster is
-the GitHub team `@MetaMask/design`. One point per merged PR a member authors in
-`metamask-extension` or `metamask-mobile`. Most merges by month end wins $250.
-A GitHub Action rebuilds standings on a cron and publishes to Pages.
+Static leaderboard for a design contest at MetaMask, scored over a rolling
+30-day window. Roster is the GitHub team `@MetaMask/design`. One point per
+merged PR a member authors in `metamask-extension` or `metamask-mobile`. Most
+merges in the window wins $250. A GitHub Action rebuilds standings on a cron
+and publishes to Pages.
 
 ## Layout
 

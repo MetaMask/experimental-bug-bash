@@ -34,7 +34,13 @@ const exclude = [
   "hilvmason",
   "jasonculbertson",
 ];
-const win = { start: "2026-09-01", end: "2026-09-30" };
+// Rolling window: the previous 30 days, recomputed every build. `start` is
+// 29 days before `end` so the span covers 30 calendar days inclusive.
+const DAY = 24 * 60 * 60 * 1000;
+const utcDate = (d) => d.toISOString().slice(0, 10);
+const endDate = new Date();
+const startDate = new Date(endDate.getTime() - 29 * DAY);
+const win = { start: utcDate(startDate), end: utcDate(endDate) };
 const prize = "$250";
 // ────────────────────────────────────────────────────────────────
 

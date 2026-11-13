@@ -1,15 +1,16 @@
 # PR Party leaderboard
 
-Static leaderboard for the September MetaMask Design PR Party. A GitHub Action
-rebuilds standings on a cron and publishes to Pages.
+Static leaderboard for the MetaMask Design PR Party, scored over a rolling
+30-day window. A GitHub Action rebuilds standings on a cron and publishes to
+Pages.
 
 Lives at `MetaMask/experimental-bug-bash`. No dependencies.
 
 ## The rule
 
 Merge a pull request into `metamask-extension` or `metamask-mobile` for a point.
-You must be on the GitHub team `@MetaMask/design`. Merges must land by 30
-September.
+You must be on the GitHub team `@MetaMask/design`. Only merges from the
+previous 30 days count — the window is recomputed on every build.
 
 - **Counted per merged PR.** Each of your merges scores once.
 - **Eligibility is `@MetaMask/design`.** Roster is fetched from that team on
@@ -35,8 +36,8 @@ Public PR search for scoring works with the same token.
 3. **Enable Pages:** Settings → Pages → Source → GitHub Actions.
 4. **Run once by hand** — Actions → PR Party leaderboard → Run workflow.
 
-To change the team, repos, dates, or prize, edit the config block at the top of
-`scripts/build-leaderboard.mjs`.
+To change the team, repos, window length, or prize, edit the config block at
+the top of `scripts/build-leaderboard.mjs`.
 
 ## Running it locally
 
