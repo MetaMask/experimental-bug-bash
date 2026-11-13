@@ -62,6 +62,7 @@ const QUERY = `
           url
           merged
           mergedAt
+          createdAt
           author { login }
           repository { nameWithOwner }
         }
@@ -209,7 +210,7 @@ const names = await fetchNames(DESIGNERS);
 const board = new Map(
   DESIGNERS.map((login) => {
     const key = login.toLowerCase();
-    return [key, { login, name: names[key] || login, points: 0, inFlight: 0, fixes: [] }];
+    return [key, { login, name: names[key] || login, points: 0, inFlight: 0, cancelled: 0, fixes: [] }];
   }),
 );
 
@@ -238,6 +239,17 @@ for (const login of DESIGNERS) {
 
   const open = await searchPulls(["is:pr", "is:open", `author:${login}`]);
   scorer.inFlight = open.length;
+
+  // Closed without merge, opened inside the window. (GitHub has no
+  // is:cancelled; closed-unmerged is the closest signal.)
+  const dead = await searchPulls([
+    "is:pr",
+    "is:closed",
+    "is:unmerged",
+    `author:${login}`,
+    `created:${win.start}..${win.end}`,
+  ]);
+  scorer.cancelled = dead.filter((pr) => inWindow(pr.createdAt)).length;
 }
 
 // Always publish every designer, including zeros — the roster is the board.
@@ -269,6 +281,7 @@ const out = {
     fixes: standings.reduce((n, r) => n + r.points, 0),
     designers: DESIGNERS.length,
     inFlight: standings.reduce((n, r) => n + r.inFlight, 0),
+    cancelled: standings.reduce((n, r) => n + r.cancelled, 0),
   },
   standings,
 };
@@ -277,6 +290,7 @@ await writeFile(new URL("../data.json", import.meta.url), JSON.stringify(out, nu
 
 console.log(
   `${out.totals.fixes} PRs by ${standings.filter((r) => r.points).length} of ` +
-    `${DESIGNERS.length} designers, ${out.totals.inFlight} in flight across ` +
+    `${DESIGNERS.length} designers, ${out.totals.inFlight} in flight, ` +
+    `${out.totals.cancelled} cancelled across ` +
     `${repos.length} repos. Wrote data.json.`,
 );

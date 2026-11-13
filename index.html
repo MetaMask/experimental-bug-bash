@@ -435,12 +435,12 @@
     ],
     totals: { fixes: 0, designers: 7, inFlight: 0 },
     standings: [
-      { login: "alidotforrest", name: "alidotforrest", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
-      { login: "andrewchra", name: "andrewchra", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
-      { login: "jessup", name: "jessup", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
-      { login: "joshuaphiloctete", name: "joshuaphiloctete", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
-      { login: "rmkk1234", name: "rmkk1234", points: 0, inFlight: 0, fixes: [], lastFixAt: null },
-      { login: "yanrong-chen", name: "yanrong-chen", points: 0, inFlight: 0, fixes: [], lastFixAt: null }
+      { login: "alidotforrest", name: "alidotforrest", points: 0, inFlight: 0, cancelled: 0, fixes: [], lastFixAt: null },
+      { login: "andrewchra", name: "andrewchra", points: 0, inFlight: 0, cancelled: 0, fixes: [], lastFixAt: null },
+      { login: "jessup", name: "jessup", points: 0, inFlight: 0, cancelled: 0, fixes: [], lastFixAt: null },
+      { login: "joshuaphiloctete", name: "joshuaphiloctete", points: 0, inFlight: 0, cancelled: 0, fixes: [], lastFixAt: null },
+      { login: "rmkk1234", name: "rmkk1234", points: 0, inFlight: 0, cancelled: 0, fixes: [], lastFixAt: null },
+      { login: "yanrong-chen", name: "yanrong-chen", points: 0, inFlight: 0, cancelled: 0, fixes: [], lastFixAt: null }
     ]
   };
 
@@ -524,7 +524,7 @@
             <span class="rank">${preSeason || !r.points ? "&middot;" : String(i + 1).padStart(2, "0")}</span>
             <div class="who">
               <div class="name">${r.name}</div>
-              <div class="handle">@${r.login}${r.inFlight ? ` · ${r.inFlight} in flight` : ""}</div>
+              <div class="handle">@${r.login}${r.inFlight ? ` · ${r.inFlight} in flight` : ""}${r.cancelled ? ` · ${r.cancelled} cancelled` : ""}</div>
               <div class="marks">${marks(r.points, max)}</div>
             </div>
             <div class="pts ${r.points ? "" : "zero"}">${r.points}<small>${r.points === 1 ? "PR" : "PRs"}</small></div>

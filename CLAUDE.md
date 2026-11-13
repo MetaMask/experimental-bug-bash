@@ -13,8 +13,8 @@ and publishes to Pages.
 - `scripts/build-leaderboard.mjs` — queries the GitHub GraphQL API and writes
   `data.json`. Config block at the top (org, team, repos, window, prize).
 - `data.json` — generated. Committed so the page renders before the first
-  Action run. Shape: `totals.{fixes,designers,inFlight}` and a `standings[]`
-  of `{login,name,points,inFlight,fixes[],lastFixAt}`.
+  Action run. Shape: `totals.{fixes,designers,inFlight,cancelled}` and a
+  `standings[]` of `{login,name,points,inFlight,cancelled,fixes[],lastFixAt}`.
 - `.github/workflows/leaderboard.yml` — cron + Pages deploy.
 
 ## Scoring invariants — do not change without asking
