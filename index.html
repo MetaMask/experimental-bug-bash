@@ -524,7 +524,7 @@
             <span class="rank">${preSeason || !r.points ? "&middot;" : String(i + 1).padStart(2, "0")}</span>
             <div class="who">
               <div class="name">${r.name}</div>
-              <div class="handle">@${r.login}${r.inFlight ? ` · ${r.inFlight} in flight` : ""}${r.cancelled ? ` · ${r.cancelled} cancelled` : ""}</div>
+              <div class="handle">@${r.login} · ${r.inFlight ?? 0} in flight · ${r.cancelled ?? 0} cancelled</div>
               <div class="marks">${marks(r.points, max)}</div>
             </div>
             <div class="pts ${r.points ? "" : "zero"}">${r.points}<small>${r.points === 1 ? "PR" : "PRs"}</small></div>
