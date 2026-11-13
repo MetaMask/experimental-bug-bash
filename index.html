@@ -385,7 +385,6 @@
       <div class="side-stats">
         <div class="side-stat"><span class="n" id="players">0</span><span class="k">on the board</span></div>
         <div class="side-stat"><span class="n" id="open">0</span><span class="k">in flight</span></div>
-        <div class="side-stat"><span class="n" id="prize">$250</span><span class="k">to the winner</span></div>
       </div>
     </div>
   </div>
@@ -483,7 +482,6 @@
     document.getElementById("players").textContent =
       d.standings.filter((r) => r.points > 0).length;
     document.getElementById("open").textContent = d.totals.inFlight ?? 0;
-    document.getElementById("prize").textContent = d.prize;
     document.getElementById("stamp").textContent = fmtStamp(d.updatedAt);
 
     const max = d.standings.reduce((m, r) => Math.max(m, r.points), 0);
