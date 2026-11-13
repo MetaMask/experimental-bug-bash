@@ -23,9 +23,9 @@ These exist because each one closes a specific hole. Preserve them.
 
 1. **Points are counted per merged PR.** One point per PR a roster member
    authored that merged inside the window.
-2. **Eligibility is `@MetaMask/design`, minus `exclude`.** The PR author must be
-   on that GitHub team at build time and not listed in `exclude`. Do not
-   reintroduce a hardcoded allowlist.
+2. **Eligibility is everyone on `@MetaMask/design`.** The PR author must be
+   on that GitHub team at build time. Do not reintroduce a hardcoded
+   allowlist; an `exclude` list exists in config but is currently empty.
 3. **No issue labels.** Labelled issues are not part of scoring. Only the PR
    author, repo, and merge date matter.
 4. **The PR must be merged inside the window.** A designer's open PR counts as
